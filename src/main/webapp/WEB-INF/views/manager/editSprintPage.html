@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Issue tracker</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="../script/util/utils.js"></script>
+  <link rel="stylesheet" href="../resource/projects.css">
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="resourceList.html">Dashboard</a></li>
+        <li><a href="/reports">Reports</a></li>
+        <li><a href="../account/employeeAccount.html">Account</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <form id="sprintForm" name="sprintForm" onsubmit="return validateSprintForm()" action="/manager/save" method="POST">
+    <div class="row">
+      <div class="col-xs-6 form-group">
+        <label>Sprint name</label>
+        <input id="name" name="name" class="form-control" type="text" required/>
+      </div>
+      <div class="col-xs-6 form-group date">
+        <label>Start date</label>
+        <input onchange="startDateChanged()" id="sprintStartDate" name="startDate" class="form-control" type="date" required/>
+      </div>
+      <div class="col-xs-6 form-group">
+        <label>Completion date</label>
+        <input id="sprintCompletionDate" name="completionDate" class="form-control" type="date" required/>
+      </div>
+      <div class="col-xs-6 form-group">
+        <label>Preliminary sprint</label>
+        <select name="previousSprint" id="preliminarySprints" class="form-control">
+          <option selected value>Have no preliminary sprint</option>
+        </select>
+      </div>
+      <div class="col-xs-6 form-group">
+      </div>
+      <div class="col-xs-6 form-group">
+        <input type="button" value="Add" onclick="editSrint()" class="btn btn-primary"/>
+      </div>
+    </div>
+    <input id="projectId" name="projectId" value="" type="hidden" class="btn btn-primary"/>
+    <input id="sprintId" name="sprintId" value="" type="hidden" class="btn btn-primary"/>
+
+    <div id="errorSprint" hidden class="alert alert-danger">
+    </div>
+  </form>
+</div>
+<footer class="container-fluid text-center">
+  <p>Vavilin Oleksandr</p>
+</footer>
+
+</body>
+<script src="../script/manager/editSprint.js"></script>
+</html>

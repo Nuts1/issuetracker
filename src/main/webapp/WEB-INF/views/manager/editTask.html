@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Issue tracker</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="../script/util/utils.js"></script>
+  <link rel="stylesheet" href="../resource/projects.css">
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="resourceList.html">Dashboard</a></li>
+        <li><a href="/reports">Reports</a></li>
+        <li><a href="../account/employeeAccount.html">Account</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <h2 id="sprintInfo">New task</h2>
+    <form id="form" name="form" onsubmit="return validateForm()" action="/manager/save" method="POST">
+      <div class="row">
+        <div class="col-xs-6 form-group">
+          <label>Task name</label>
+          <input id="name" name="name" class="form-control" type="text" required/>
+        </div>
+        <div class="col-xs-6 form-group date">
+          <label>Start date</label>
+          <input onchange="changeCompletionDate()" id="startDate" name="startDate" class="form-control" type="date" required/>
+          <select id="startTime" name="startTime" class="form-control" onchange="changeCompletionDate()">
+            <option selected value="8">8:00</option>
+            <option value="9">9:00</option>
+            <option value="10">10:00</option>
+            <option value="11">11:00</option>
+            <option value="12">12:00</option>
+            <option value="13">13:00</option>
+            <option value="14">14:00</option>
+            <option value="15">15:00</option>
+            <option value="16">16:00</option>
+          </select>
+        </div>
+        <div class="col-xs-6 form-group">
+          <label>Completion date</label>
+          <input readonly title="Set automatically" id="completionDate" name="completionDate" class="form-control" type="date" required/>
+          <select  name="completionTime" title="Set automatically" readonly id="completionTime" class="form-control">
+            <option selected value="8">8:00</option>
+            <option value="9">9:00</option>
+            <option value="10">10:00</option>
+            <option value="11">11:00</option>
+            <option value="12">12:00</option>
+            <option value="13">13:00</option>
+            <option value="14">14:00</option>
+            <option value="15">15:00</option>
+            <option value="16">16:00</option>
+          </select>
+        </div>
+        <div class="col-xs-6 form-group">
+          <label>Estimate (in hours)</label>
+          <input onchange="changeCompletionDate()" id="estimate" name="estimate" class="form-control" type="number" required/>
+        </div>
+        <div class="col-xs-6 form-group">
+          <label>Preliminary task</label>
+          <select onchange="setMinDate()" title="First select sprint" name="previousTaskId" id="preliminaryTask" class="form-control">
+            <option selected value>Have no preliminary task</option>
+          </select>
+        </div>
+        <div class="col-xs-6 form-group">
+          <label>Description</label>
+          <textarea name="description" style="resize: none" class="form-control" rows="5" id="description" required></textarea>
+        </div>
+        <div class="col-xs-6 form-group">
+          <label>Selected developers</label>
+          <ul id="selectedDevelopers" class="list-group">
+              <label>Empty List</label>
+          </ul>
+        </div>
+        <div class="col-xs-6 form-group">
+          <div class="col-sm-6">
+            <label>Developer position</label>
+            <select id="developerPosition" class="form-control">
+              <!--Positions -->
+            </select>
+          </div>
+          <div class="col-sm-6">
+            <label>Developer department</label>
+            <select id="selectDepartment" class="form-control">
+              <!--Departments -->
+            </select>
+          </div>
+          <input style="margin: 10px" type="button" value="Apply filter" onclick="applyFilter()" class="btn"/>
+          <div id="developerList" class="pre-scrollable">
+            <!--//Developers-->
+            <label>Empty List</label>
+          </div>
+          <input style="margin: 10px" type="button" value="Add developers" onclick="addDevelopers()" class="btn"/>
+        </div>
+        <div class="col-xs-6 form-group">
+        </div>
+        <div class="col-xs-6 form-group">
+          <input type="button" value="Edit Task" onclick="sumbit()" class="btn btn-primary"/>
+        </div>
+        <input id="employeeIds" name="employeeIds" type="hidden" value="Submit" class="btn btn-primary"/>
+        <input id="employeeUnits" name="employeeUnits" type="hidden" value="Submit" class="btn btn-primary"/>
+        <input id="idTask" name="idTask" value="" type="hidden" class="btn btn-primary"/>
+        <input id="idSprint" name="idSprint" value="" type="hidden" class="btn btn-primary"/>
+      </div>
+      <div id="error" hidden class="alert alert-danger">
+
+      </div>
+    </form>
+</div>
+<footer class="container-fluid text-center">
+  <p>Vavilin Oleksandr</p>
+</footer>
+
+</body>
+<script src="../script/manager//editTask.js"></script>
+</html>

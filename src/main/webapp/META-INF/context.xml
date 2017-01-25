@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<Context antiJARLocking="true" path="/" reloadable="false">
+
+    <Resource
+            name="jdbc/IssueTracker"
+            auth="Container"
+            maxActive="15" maxIdle="10" maxWait="1000"
+            username="postgres" password="1928" driverClassName="org.postgresql.Driver"
+            url="jdbc:postgresql://localhost:5432/postgres"
+            factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
+            type="javax.sql.DataSource"
+            removeAbandonedTimeout="60"
+            abandonWhenPercentageFull="50"
+            closeMethod="close"
+            defaultAutoCommit="false"
+    />
+</Context>

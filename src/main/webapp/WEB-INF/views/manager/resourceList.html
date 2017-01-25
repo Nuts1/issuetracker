@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Issue tracker</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="../script/util/utils.js"></script>
+  <link rel="stylesheet" href="../resource/projects.css">
+</head>
+<body style = "  min-width:1200px;width: auto !important; width:400px;">
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar" idTask="myNavbar">
+      <ul class="nav navbar-nav">
+        <li><a href="projects.html">Projects</a></li>
+        <li class="active"><a href="resourceList.html">Dashboard</a></li>
+        <li><a href="/reports">Reports</a></li>
+        <li><a href="../account/employeeAccount.html">Account</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container-fluid text-center">
+  <div class="row content">
+    <div class="col-sm-2 sidenav">
+      <!--Project List -->
+      <label>Diagrams</label>
+      <li class="list-group-item"><a onclick="selectResourceList()">Resource List</a></li>
+      <li class="list-group-item"><a onclick="selectProjectStatistic()">Project Statistic</a></li>
+      <li class="list-group-item"><a onclick="selectSprintStatistic()">Sprint Statistic</a></li>
+    </div>
+    <div class="col-sm-10">
+      <div hidden id="projectListDiv" class="col-sm-6" style="width: 200px;">
+        <label>Select</label>
+        <select onchange="onChangeFilter()" id="projectList" class="form-control">
+        </select>
+      </div>
+      <div hidden id="employeeListDiv" class="col-sm-6" style="width: 200px;">
+        <label>Employee</label>
+        <select onchange="onChangeFilter()" id="employeeList" class="form-control">
+        </select>
+      </div>
+      <div hidden id="periodDiv" class="col-sm-6 form-group" style="width: 200px;" id="dateIntervalList">
+        <div class="col-xm-3 form-group date">
+            <label>Begin periaod</label>
+            <input onchange="onChangeInterval()" id="startDate" name="startDate" class="form-control" type="date" required/>
+        </div>
+        <div class="col-xm-3 form-group date">
+            <label>End periaod</label>
+            <input onchange="onChangeInterval()" id="completionDate" name="startDate" class="form-control" type="date" required/>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-10 text-left">
+      <div class="container-fluid" style="overflow-y:scroll;">
+        <div id="content"  class="row">
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="container-fluid text-center">
+  <p>Vavilin Oleksandr</p>
+</footer>
+  <script src="../script/manager/resourceList.js"></script>
+</body>
+</html>
