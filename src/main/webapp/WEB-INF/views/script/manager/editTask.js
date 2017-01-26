@@ -279,7 +279,12 @@ function Update(formData, url) {
     url : url,
     timeout : 100000,
     success : function(data) {
-      alert("Updated");
+      if(data != null) {
+          var error = document.getElementById('error');
+          error.removeAttribute('hidden');
+          error.innerHTML = data;
+          return false;
+      }
     },
     error : function(e) {
       console.log("ERROR: ", e);

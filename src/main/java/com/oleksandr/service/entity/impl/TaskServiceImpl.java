@@ -2,6 +2,7 @@ package com.oleksandr.service.entity.impl;
 
 import com.oleksandr.dao.TaskDao;
 import com.oleksandr.dto.TaskDto;
+import com.oleksandr.entity.Task;
 import com.oleksandr.service.entity.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,12 +26,12 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<com.oleksandr.entity.Task> getBySprintId(long id) {
+    public List<Task> getBySprintId(long id) {
         return dao.getBySprintId(id);
     }
 
     @Override
-    public com.oleksandr.entity.Task getById(long id) {
+    public Task getById(long id) {
         return dao.getById(id);
     }
 
@@ -43,6 +44,15 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public void delete(long id) {
+        List<TaskDto> tasks = dao.getAllDependentTaskDto(id); // dependentTask.previous_task_id = id;
+        if(tasks != null) {
+            TaskDto taskDto = dao.getDtoById(id);
+            tasks.forEach(e -> {
+                e.setPreviousTaskId(taskDto.getPreviousTaskId());
+                dao.update(e);
+            });
+        }
+        
         dao.delete(id);
     }
 
@@ -53,13 +63,13 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<com.oleksandr.entity.Task> getByEmployeeId(long employeeId) {
+    public List<Task> getByEmployeeId(long employeeId) {
         return dao.getByEmployeeId(employeeId);
     }
 
     @Override
     public String complete(long taskId, long employeeId) {
-        com.oleksandr.entity.Task task = dao.getById(taskId);
+        Task task = dao.getById(taskId);
         if(task.getActualCompletionDate() != null) {
             return "Already complete";
         }

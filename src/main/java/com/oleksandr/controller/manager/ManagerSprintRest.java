@@ -2,6 +2,7 @@ package com.oleksandr.controller.manager;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.oleksandr.dto.SprintDto;
+import com.oleksandr.entity.Employee;
 import com.oleksandr.entity.Sprint;
 import com.oleksandr.entity.json.Views;
 import com.oleksandr.service.entity.impl.SprintServiceImpl;
@@ -10,6 +11,7 @@ import com.oleksandr.validator.SprintValidator;
 import com.oleksandr.validator.TaskValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Scope;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,8 @@ import java.util.stream.Collectors;
  * Created by nuts on 25.01.17.
  */
 @RestController
+@Scope("session")
+@SessionAttributes(names = "employee", types = Employee.class)
 public class ManagerSprintRest {
     private final SprintServiceImpl sprintService;
     private final SprintValidator sprintValidator;

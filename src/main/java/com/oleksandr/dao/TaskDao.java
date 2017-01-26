@@ -11,9 +11,9 @@ import java.util.List;
  * 8:58 PM.
  */
 public interface TaskDao {
-    List<com.oleksandr.entity.Task> getBySprintId(long id);
+    List<Task> getBySprintId(long id);
 
-    com.oleksandr.entity.Task getById(long id);
+    Task getById(long id);
 
     boolean save(TaskDto taskWithResourcesDto);
 
@@ -21,11 +21,15 @@ public interface TaskDao {
 
     int update(TaskDto taskWithResourcesDto);
 
-    List<com.oleksandr.entity.Task> getByEmployeeId(long employeeId);
+    List<Task> getByEmployeeId(long employeeId);
 
     void setActualCompleteDate(long taskId, Date time);
 
     boolean setDelay(long id, long d);
 
-    com.oleksandr.entity.Task getByIdWithoutEmployees(long task_id);
+    Task getByIdWithoutEmployees(long task_id);
+
+    List<TaskDto> getAllDependentTaskDto(long id);
+
+    TaskDto getDtoById(long id);
 }

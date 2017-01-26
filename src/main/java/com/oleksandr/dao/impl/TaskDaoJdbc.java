@@ -72,6 +72,36 @@ public class TaskDaoJdbc implements TaskDao {
             "FROM task " +
             "WHERE task_id = ?";
 
+    private static final String SELECT_DTO_BY_ID = "SELECT task_id AS task_id, " +
+            "name AS name, " +
+            "start_date AS start_date, " +
+            "estimate AS estimate, " +
+            "sprint_id AS sprint_id, " +
+            "subtask_id AS subtask_id, " +
+            "previous_task_id AS previous_task_id, " +
+            "description AS description, " +
+            "completion_date AS completion_date, " +
+            "predicted_delay AS predicted_delay, " +
+            "actual_completion_date AS actual_completion_date, " +
+            "actual_start_date AS actual_start_date " +
+            "FROM task " +
+            "WHERE task_id = ?";
+
+    private static final String SELECT_DTO_BY_PREVIOUS_TASK_ID = "SELECT task_id AS task_id, " +
+            "name AS name, " +
+            "start_date AS start_date, " +
+            "estimate AS estimate, " +
+            "sprint_id AS sprint_id, " +
+            "subtask_id AS subtask_id, " +
+            "previous_task_id AS previous_task_id, " +
+            "description AS description, " +
+            "completion_date AS completion_date, " +
+            "predicted_delay AS predicted_delay, " +
+            "actual_completion_date AS actual_completion_date, " +
+            "actual_start_date AS actual_start_date " +
+            "FROM task " +
+            "WHERE task_id = ?";
+
     private static final String SAVE_TASK = "INSERT INTO task " +
             "(task_id, name, start_date, estimate, sprint_id, previous_task_id, description, completion_date, predicted_delay)" +
             " VALUES ( nextval('seq') , ?, ?, ?, ?, ?, ?, ?, ?)  RETURNING task_id";
@@ -147,6 +177,46 @@ public class TaskDaoJdbc implements TaskDao {
                 close(statement);
                 return null;
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            close(connection, resultSet);
+        }
+    }
+
+    @Override
+    public List<TaskDto> getAllDependentTaskDto(long id) {
+        Connection connection = null;
+        ResultSet resultSet = null;
+        try {
+            connection = dataSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(SELECT_DTO_BY_PREVIOUS_TASK_ID);
+            statement.setLong(1, id);
+            resultSet = statement.executeQuery();
+            List<TaskDto> tasks = mapTasksDto(resultSet);
+            close(statement);
+            return tasks;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            close(connection, resultSet);
+        }
+    }
+
+    @Override
+    public TaskDto getDtoById(long id) {
+        Connection connection = null;
+        ResultSet resultSet = null;
+        try {
+            connection = dataSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(SELECT_DTO_BY_ID);
+            statement.setLong(1, id);
+            resultSet = statement.executeQuery();
+            TaskDto task = mapDto(resultSet);
+            close(statement);
+            return task;
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -401,6 +471,31 @@ public class TaskDaoJdbc implements TaskDao {
         task.setSubtask(resultSet.getLong("subtask_id"));
         task.setTaskId(resultSet.getLong("task_id"));
         timestamp = resultSet.getTimestamp("actual_completion_date");
+        if(timestamp != null)
+            task.setActualCompletionDate(new java.util.Date(timestamp.getTime()));
+        timestamp = resultSet.getTimestamp("actual_start_date");
+        if(timestamp != null)
+            task.setActualStartDate(new java.util.Date(timestamp.getTime()));
+        return task;
+    }
+
+    private List<TaskDto> mapTasksDto(ResultSet resultSet) throws SQLException {
+        List<TaskDto> tasks = new ArrayList<>();
+        while (resultSet.next()) {
+            tasks.add(mapDto(resultSet));
+        }
+        return tasks;
+
+    }
+
+    private TaskDto mapDto(ResultSet resultSet) throws SQLException {
+        TaskDto task = new TaskDto();
+        task.setName(resultSet.getString("name"));
+        task.setStartDate(new java.util.Date(resultSet.getTimestamp("start_date").getTime()));
+        task.setCompletionDate(new java.util.Date(resultSet.getTimestamp("completion_date").getTime()));
+        task.setLoad(resultSet.getInt("load"));
+        task.setEstimate(resultSet.getInt("estimate"));
+        Timestamp timestamp = resultSet.getTimestamp("actual_completion_date");
         if(timestamp != null)
             task.setActualCompletionDate(new java.util.Date(timestamp.getTime()));
         timestamp = resultSet.getTimestamp("actual_start_date");

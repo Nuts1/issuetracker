@@ -1,4 +1,8 @@
-package com.oleksandr.controller.admin;
+package com.oleksandr.controller.customer;
+
+/**
+ * Created by nuts on 26.01.17.
+ */
 
 import com.oleksandr.entity.Employee;
 import com.oleksandr.service.entity.EmployeeService;
@@ -11,27 +15,25 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import java.security.Principal;
 
-/**
- * Created by Nuts on 1/13/2017
- * 1:20 PM.
- */
 @Controller
 @Scope("session")
 @SessionAttributes(names = "employee", types = Employee.class)
-public class AdminController {
+public class CustomerController {
     private final EmployeeService employeeService;
 
     @Autowired
-    public AdminController(EmployeeService employeeService) {
+    public CustomerController(EmployeeService employeeService) {
         this.employeeService = employeeService;
     }
 
-    @RequestMapping(value = "/admin")
+    @RequestMapping(value = "/customer")
     public String welcome(Principal principal, Model model) {
         //long employeeId = Long.parseLong(principal.getName()); // getName return employeeId; TODO
-        long employeeId = 169;
+        long employeeId = 4;
         Employee employee = employeeService.getById(employeeId);
+        System.out.println(employee);
         model.addAttribute("employee", employee);
-        return "redirect:/admin/project.html";
+        return "redirect:/customer/projects.html";
     }
+
 }

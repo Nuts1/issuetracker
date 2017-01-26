@@ -89,7 +89,12 @@ function save(formData) {
     url : "/manager/saveSprint",
     timeout : 100000,
     success : function(data) {
-      alert(data);
+      if(data != null) {
+          var error = document.getElementById('errorSprint');
+          error.removeAttribute('hidden');
+          error.innerHTML = data;
+          return false;
+      }
       selectProject(getParameterByName('selectedProject'));
     },
     error : function(e) {

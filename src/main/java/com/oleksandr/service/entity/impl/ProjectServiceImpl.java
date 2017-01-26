@@ -69,5 +69,10 @@ public class ProjectServiceImpl implements ProjectService {
         return statistic;
     }
 
+    @Override
+    public List<Project> getAllNameAndIdByCustomerId(long employeeId) {
+        return dao.getAllNameAndIdByCustomerId(employeeId);
+    }
+
 
 }

@@ -14,6 +14,7 @@ http://www.springframework.org/schema/security/spring-security.xsd">
         <intercept-url pattern="/admin/*" access="hasRole('ROLE_ADMIN')"/>
         <intercept-url pattern="/manager/*" access="hasRole('ROLE_MANAGER')"/>
         <intercept-url pattern="/employee/*" access="hasRole('ROLE_EMPLOYEE')"/>
+        <intercept-url pattern="/customer/*" access="hasRole('ROLE_CUSTOMER')"/>
         <intercept-url pattern="/403" access="permitAll"/>
         <form-login login-processing-url="/login" login-page="/loginForm"
                     authentication-failure-url="/403" username-parameter="email" password-parameter="password"

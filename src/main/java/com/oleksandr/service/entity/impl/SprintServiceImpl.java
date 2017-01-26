@@ -17,8 +17,6 @@ import java.util.List;
  */
 @Service
 public class SprintServiceImpl implements SprintService {
-
-
     private final SprintDao dao;
 
     @Autowired
@@ -68,6 +66,14 @@ public class SprintServiceImpl implements SprintService {
     @Override
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public boolean delete(Long sprintId) {
+        List<SprintDto> sprints = dao.getAllDependentSprintDto(sprintId); // dependentSprint.previous_sprint_id = sprintId;
+        if(sprints != null) {
+            SprintDto sprintDto = dao.getDtoById(sprintId);
+            sprints.forEach(e -> {
+                e.setPreviousSprint(sprintDto.getPreviousSprint());
+                dao.update(e);
+            });
+        }
         return dao.delete(sprintId) > 0;
     }
 }

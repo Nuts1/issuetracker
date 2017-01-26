@@ -28,4 +28,6 @@ public interface EmployeeService {
 
     List<Employee> getByProjectId(long idProject);
     List<Employee> getAll();
+
+    Employee getEmployeeByEmail(String email);
 }

@@ -154,6 +154,11 @@ public class ProjectDaoJdbc implements ProjectDao {
             "FROM project p " +
             "WHERE manager_id = ?";
 
+    private static final String SELECT_BY_CUSTOMER_ID = "SELECT p.name AS name," +
+            "p.project_id AS project_id " +
+            "FROM project p " +
+            "WHERE customer_id = ?";
+
     private static final String DELETE_BY_ID = "DELETE FROM project WHERE project_id = ?";
 
     @Autowired
@@ -316,6 +321,27 @@ public class ProjectDaoJdbc implements ProjectDao {
             result.putAll(mapStatistic(statement.executeQuery()));
             statement.setLong(1, id);
 
+            return result;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            close(connection, resultSet);
+        }
+    }
+
+    @Override
+    public List<Project> getAllNameAndIdByCustomerId(long employeeId) {
+        System.out.println(employeeId);
+        Connection connection = null;
+        ResultSet resultSet = null;
+        try {
+            connection = dataSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(SELECT_BY_CUSTOMER_ID);
+            statement.setLong(1, employeeId);
+            resultSet = statement.executeQuery();
+            List<Project> result = mapProjectNameAndId(resultSet);
+            close(statement);
             return result;
         } catch (SQLException e) {
             e.printStackTrace();

@@ -74,6 +74,11 @@ function save(formData) {
     url: "/manager/editSprint",
     timeout: 100000,
     success: function(data) {
+      if(data != null) {
+          var error = document.getElementById('errorSprint');
+          error.removeAttribute('hidden');
+          error.innerHTML = data;
+      }
       selectProject(str);
     },
     error: function(e) {

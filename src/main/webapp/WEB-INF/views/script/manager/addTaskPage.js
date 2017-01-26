@@ -325,6 +325,7 @@ function saveTask(formData) {
     timeout : 100000,
     success : function(data) {
       if(data != null && data != "") {
+        var error = document.getElementById('error');
         error.removeAttribute('hidden');
         error.innerHTML = data;
       } else {

@@ -13,6 +13,7 @@ function onLoad() {
   }
 }
 
+
 function getByRole(role) {
   $.ajax({
     type : "POST",
@@ -101,7 +102,12 @@ function updateProject() {
     data: getData(),
     timeout : 100000,
     success : function(data) {
-
+      if(data != null) {
+        var error = document.getElementById('error');
+        error.removeAttribute('hidden');
+        error.innerHTML = data;
+        return false;
+      }
     },
     error : function(e) {
       console.log("ERROR: ", e);
@@ -118,7 +124,12 @@ function addProject() {
     data: getData(),
     timeout : 100000,
     success : function(data) {
-
+      if(data != null) {
+        var error = document.getElementById('error');
+        error.removeAttribute('hidden');
+        error.innerHTML = data;
+        return false;
+      }
     },
     error : function(e) {
       console.log("ERROR: ", e);
@@ -155,7 +166,6 @@ function validateForm() {
     }
   }
 
-
   if(validationInfo != "") {
     error.removeAttribute('hidden');
     error.innerHTML = validationInfo;
@@ -163,7 +173,6 @@ function validateForm() {
   }
 
   return true;
-
 }
 
 window.onload = onLoad();

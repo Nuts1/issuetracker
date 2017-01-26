@@ -204,7 +204,12 @@ function updateEmployee() {
     data: getData(),
     timeout : 100000,
     success : function(data) {
-
+      if(data != null) {
+        var error = document.getElementById('error');
+        error.removeAttribute('hidden');
+        error.innerHTML = data;
+        return false;
+      }
     },
     error : function(e) {
       console.log("ERROR: ", e);
@@ -220,7 +225,12 @@ function addEmployee() {
     data: getData(),
     timeout : 100000,
     success : function(data) {
-
+        if(data != null) {
+          var error = document.getElementById('error');
+          error.removeAttribute('hidden');
+          error.innerHTML = data;
+          return false;
+        }
     },
     error : function(e) {
       console.log("ERROR: ", e);

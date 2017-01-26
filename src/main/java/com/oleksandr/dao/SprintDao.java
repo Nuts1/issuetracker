@@ -21,11 +21,13 @@ public interface SprintDao {
 
     int save(SprintDto sprint);
 
-    int update(SprintDto taskDto);
+    int update(SprintDto sprintDto);
 
     List<SprintDto> getSprints(long employeeId, long projectId);
 
     LinkedHashMap<String, String> getSprintStatistic(long id);
 
     int delete(Long sprintId);
+
+    List<SprintDto> getAllDependentSprintDto(long id);
 }

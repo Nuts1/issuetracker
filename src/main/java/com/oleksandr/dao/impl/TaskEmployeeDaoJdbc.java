@@ -83,6 +83,7 @@ public class TaskEmployeeDaoJdbc implements TaskEmployeeDao {
             "e.department_id AS department_id, " +
             "te.id_task_employee AS id_task_employee, " +
             "task_id AS task_id, " +
+            "load AS load, " +
             "te.confirm AS confirm, " +
             "p.name AS projectName, " +
             "s.name AS sprintName " +

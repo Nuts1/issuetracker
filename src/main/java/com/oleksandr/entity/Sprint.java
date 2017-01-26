@@ -33,7 +33,6 @@ public class Sprint {
         this.tasks = t;
     }
 
-
     public Long getSprintId() {
         return sprintId;
     }

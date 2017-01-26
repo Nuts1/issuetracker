@@ -37,6 +37,17 @@ public class SprintDaoJdbc implements SprintDao {
             "WHERE project_id = ?" +
             "ORDER BY start_date";
 
+    private static final String SELECT_BY_PREVIOUS_SPRINT_ID = "SELECT sprint_id AS sprint_id, " +
+            "name AS name, " +
+            "start_date AS start_date," +
+            "completion_date AS completion_date, " +
+            "project_id AS project_id, " +
+            "previous_sprint_id AS previous_sprint_id," +
+            "sprint_id AS sprint_id " +
+            "FROM sprint " +
+            "WHERE previous_sprint_id = ?" +
+            "ORDER BY start_date";
+
     private static final String SELECT_SPRINT_STATISTIC = "SELECT 'Delay (based on the last completed task.\n" +
             "In working hours\n" +
             "(8 hours per day))', " +
@@ -386,6 +397,26 @@ public class SprintDaoJdbc implements SprintDao {
             close(connection);
         }
         return 0;
+    }
+
+    @Override
+    public List<SprintDto> getAllDependentSprintDto(long id) {
+        Connection connection = null;
+        ResultSet resultSet = null;
+        try {
+            connection = dataSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(SELECT_BY_PREVIOUS_SPRINT_ID);
+            statement.setLong(1, id);
+            resultSet = statement.executeQuery();
+            List<SprintDto> sprints = mapSprintsDto(resultSet);
+            close(statement);
+            return sprints;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            close(connection, resultSet);
+        }
     }
 
     private List<SprintDto> mapSprintsDto(ResultSet resultSet) throws SQLException {

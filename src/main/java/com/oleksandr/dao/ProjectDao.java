@@ -32,4 +32,6 @@ public interface ProjectDao {
     List<ProjectDto> getProjectDtos(long employeeId, long idProject);
 
     LinkedHashMap<String,String> getStatistic(long id);
+
+    List<Project> getAllNameAndIdByCustomerId(long employeeId);
 }

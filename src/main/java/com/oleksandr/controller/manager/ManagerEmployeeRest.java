@@ -10,9 +10,11 @@ import com.oleksandr.entity.Employee;
 import com.oleksandr.entity.Position;
 import com.oleksandr.entity.json.Views;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import java.util.List;
 
@@ -20,6 +22,8 @@ import java.util.List;
  * Created by nuts on 25.01.17.
  */
 @RestController
+@Scope("session")
+@SessionAttributes(names = "employee", types = Employee.class)
 public class ManagerEmployeeRest {
     private final EmployeeDao employeeService;
     private final DepartmentDao departmentService;

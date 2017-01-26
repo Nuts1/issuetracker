@@ -2,6 +2,7 @@ package com.oleksandr.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.oleksandr.entity.Sprint;
 import com.oleksandr.entity.json.Views;
 
 import java.sql.Date;

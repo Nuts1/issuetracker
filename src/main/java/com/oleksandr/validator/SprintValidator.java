@@ -1,8 +1,10 @@
 package com.oleksandr.validator;
 
-import com.oleksandr.dao.SprintDao;
 import com.oleksandr.dto.SprintDto;
+import com.oleksandr.entity.Project;
 import com.oleksandr.entity.Sprint;
+import com.oleksandr.service.entity.ProjectService;
+import com.oleksandr.service.entity.SprintService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -15,16 +17,18 @@ import static com.oleksandr.validator.constant.SprintConstant.*;
  */
 @Component
 public class SprintValidator {
-    private final SprintDao dao;
+    private final SprintService sprintService;
+    private final ProjectService projectService;
 
     @Autowired
-    public SprintValidator(SprintDao dao) {
-        this.dao = dao;
+    public SprintValidator(SprintService sprintService, ProjectService projectService) {
+        this.sprintService = sprintService;
+        this.projectService = projectService;
     }
 
     public void validateSave(SprintDto sprint, Errors errors) {
         validateLinkWithPreviousSprint(sprint, errors);
-
+        validateLinkWithProject(sprint, errors);
         if (sprint.getStartDate().compareTo(sprint.getCompletionDate()) > 0) {
             errors.rejectValue(START_DATE, "sprint.startDateLaterCompletionDate");
         }
@@ -34,6 +38,7 @@ public class SprintValidator {
 
     public void validateUpdate(SprintDto sprint, Errors errors) {
         validateLinkWithPreviousSprint(sprint, errors);
+        validateLinkWithProject(sprint, errors);
 
         if (sprint.getStartDate().compareTo(sprint.getCompletionDate()) > 0) {
             errors.rejectValue(START_DATE, "sprint.startDateLaterCompletionDate");
@@ -46,7 +51,7 @@ public class SprintValidator {
     private void validateLinkWithPreviousSprint(SprintDto sprint, Errors errors) {
         if (sprint.getPreviousSprint() != null) {
             long id = Long.parseLong(sprint.getPreviousSprint());
-            Sprint previous = dao.getById(id);
+            Sprint previous = sprintService.getById(id);
             if (previous.getPreviousSprint() != null &&
                     previous.getPreviousSprint() == sprint.getSprintId()) {
                 errors.reject("sprint.circularDependency");
@@ -55,6 +60,20 @@ public class SprintValidator {
             if (sprint.getStartDate().compareTo(previous.getCompletionDate()) < 0) {
                 errors.rejectValue(START_DATE, "sprint.startDateBeforePreviousCompletionDate");
             }
+        }
+    }
+
+    private void validateLinkWithProject(SprintDto sprint, Errors errors) {
+        long id = sprint.getProjectId();
+        Project project = projectService.getById(id);
+
+
+        if (sprint.getStartDate().compareTo(project.getStartDate()) < 0) {
+            errors.rejectValue(START_DATE, "sprint.sprintStartDateBeforeProjectStartDate");
+        }
+
+        if (sprint.getCompletionDate().compareTo(project.getCompletionDate()) > 0) {
+            errors.rejectValue(COMPLETION_DATE, "sprint.sprintCompletionDateLaterProjectCompletionDate");
         }
     }
 }
