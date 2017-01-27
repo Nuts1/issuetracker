@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
+import java.util.Date;
+
 import static com.oleksandr.validator.constant.SprintConstant.COMPLETION_DATE;
 import static com.oleksandr.validator.constant.SprintConstant.START_DATE;
 import static com.oleksandr.validator.constant.TaskConstant.*;
@@ -43,21 +45,28 @@ public class TaskValidator {
             errors.rejectValue(START_DATE, "task.startDateLaterCompletionDate");
         }
 
+        if (task.getActualCompletionDate() != null) {
+            errors.reject("task.changeCompleted");
+        }
+
         ValidationUtils.rejectIfEmpty(errors, ID_TASK, "task.idNull");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, NAME, "task.nameNull");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, DESCRIPTION, "task.descriptionNull");
     }
 
     private void validateLinkWithPreviousTask(TaskDto task, Errors errors) {
-        if (task.getPreviousTaskId() != null) {
+        if (task.getPreviousTaskId() != null && task.getPreviousTaskId().length() > 0 ) {
             long id = Long.parseLong(task.getPreviousTaskId());
             Task previous = taskService.getById(id);
-            if (previous.getPreviousTask() != null &&
+            if (previous.getPreviousTask() != null && task.getIdTask() != null &&
                     previous.getPreviousTask().getTaskId() == task.getIdTask()) {
                 errors.reject("task.circularDependency");
             }
 
-            if (task.getStartDate().compareTo(previous.getCompletionDate()) < 0) {
+            Date completionPreviousTask = (previous.getActualCompletionDate() != null) ?
+                previous.getActualCompletionDate() : previous.getCompletionDate();
+
+            if (task.getStartDate().compareTo(completionPreviousTask) < 0) {
                 errors.rejectValue(START_DATE, "task.startDateBeforePreviousCompletionDate");
             }
         }

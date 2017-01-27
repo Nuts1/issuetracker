@@ -161,6 +161,27 @@ public class ProjectDaoJdbc implements ProjectDao {
 
     private static final String DELETE_BY_ID = "DELETE FROM project WHERE project_id = ?";
 
+    private static final String PROJECT_TASK_STATISTIC = "SELECT 'Count tasks with delay', COUNT(task_id) " +
+            "FROM project INNER JOIN sprint s USING(project_id)\n" +
+            "INNER JOIN task t USING(sprint_id)\n" +
+            "WHERE project_id = ?  AND\n" +
+            "  t.actual_completion_date > t.completion_date\n" +
+            "GROUP BY project_id\n" +
+            "UNION ALL\n" +
+            "SELECT 'Count tasks finished in time', COUNT(task_id) " +
+            "FROM project INNER JOIN sprint s USING(project_id)\n" +
+            "INNER JOIN task t USING(sprint_id)\n" +
+            "WHERE project_id = ?  AND\n" +
+            "  t.actual_completion_date <= t.completion_date\n" +
+            "GROUP BY project_id\n" +
+            "UNION ALL\n" +
+            "SELECT 'Count tasks', COUNT(task_id) " +
+            "FROM project INNER JOIN sprint s USING(project_id)\n" +
+            "INNER JOIN task t USING(sprint_id)\n" +
+            "WHERE project_id = ? \n" +
+            "GROUP BY project_id\n";
+
+
     @Autowired
     public ProjectDaoJdbc(EmployeeDao employeeDao, SprintDao sprintDao) {
         this.employeeDao = employeeDao;
@@ -329,6 +350,30 @@ public class ProjectDaoJdbc implements ProjectDao {
             close(connection, resultSet);
         }
     }
+
+
+    @Override
+    public LinkedHashMap<String, String> getStatisticTask(long id) {
+        Connection connection = null;
+        ResultSet resultSet = null;
+        try {
+            connection = dataSource.getConnection();
+
+            PreparedStatement statement = connection.prepareStatement(PROJECT_TASK_STATISTIC);
+            statement.setLong(1, id);
+            statement.setLong(2, id);
+            statement.setLong(3, id);
+
+            resultSet = statement.executeQuery();
+            return mapStatistic(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            close(connection, resultSet);
+        }
+    }
+
 
     @Override
     public List<Project> getAllNameAndIdByCustomerId(long employeeId) {

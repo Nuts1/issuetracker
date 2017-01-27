@@ -5,15 +5,15 @@ var tasks = {};
 
 function selectProject(str) {
     $.ajax({
-        type : "POST",
-        contentType : "application/json",
-        url : "/customer/project?projectId=" + str,
-        timeout : 100000,
-        success : function(data) {
+        type: "POST",
+        contentType: "application/json",
+        url: "/customer/project?projectId=" + str,
+        timeout: 100000,
+        success: function (data) {
             history.pushState(null, null, '/customer/projects.html?selectedProject=' + str);
             tableCreate(data);
         },
-        error : function(e) {
+        error: function (e) {
             console.log("ERROR: ", e);
         }
     });
@@ -21,10 +21,10 @@ function selectProject(str) {
 
 function projectsWrite(data) {
     var projectList = document.getElementById('projectList');
-    for(var i = 0; i < data.length; i++) {
+    for (var i = 0; i < data.length; i++) {
         var li = document.createElement('li');
         li.setAttribute('class', 'list-group-item');
-        li.innerHTML = '<a onclick="selectProject('+ data[i].projectId + ')">' + data[i].name + '</a>';
+        li.innerHTML = '<a onclick="selectProject(' + data[i].projectId + ')">' + data[i].name + '</a>';
         projectList.appendChild(li);
     }
 }
@@ -43,14 +43,14 @@ function getParameterByName(name, url) {
 
 function getProjects() {
     $.ajax({
-        type : "GET",
-        contentType : "application/json",
-        url : "/customer/projectList",
-        timeout : 100000,
-        success : function(data) {
+        type: "GET",
+        contentType: "application/json",
+        url: "/customer/projectList",
+        timeout: 100000,
+        success: function (data) {
             projectsWrite(data);
         },
-        error : function(e) {
+        error: function (e) {
             console.log("ERROR: ", e);
         }
     });
@@ -61,8 +61,8 @@ function tableCreate(project) {
     var sprints = document.getElementById('sprints');
     sprints.innerHTML = "";
     projectName.innerHTML = project.name;
-    projectInfo.innerHTML = '<label>Start date: </label><label id="'+ project.projectId + 'ProjectStartDate">'+ project.startDate
-        + '</label><br><label>Completion date: </label><label id="'+ project.projectId + 'ProjectCompletionDate">' + project.completionDate + '</label>'
+    projectInfo.innerHTML = '<label>Start date: </label><label id="' + project.projectId + 'ProjectStartDate">' + project.startDate
+        + '</label><br><label>Completion date: </label><label id="' + project.projectId + 'ProjectCompletionDate">' + project.completionDate + '</label>'
         + '<br> Predicated completion date: ' + project.predicatedCompletionDate
         + '<br> Customer: ' + project.customer.name + " " + project.customer.surname
         + '<br> Manager: ' + project.manager.name + ' ' + project.manager.surname;
@@ -74,8 +74,8 @@ function tableCreate(project) {
         var sprintInfo = document.createElement('h4');
         sprintInfo.setAttribute('id', project.sprints[i].sprintId);
         sprintInfo.innerHTML = "<hr>Sprint: " + project.sprints[i].name +
-            '<br><label>Start date: </label><label id="'+ project.sprints[i].sprintId + 'SprintStartDate">'+ project.sprints[i].startDate +
-            '</label><br><label>Completion date: </label><label id="'+ project.sprints[i].sprintId + 'SprintCompletionDate">' + project.sprints[i].completionDate + '</label>';
+            '<br><label>Start date: </label><label id="' + project.sprints[i].sprintId + 'SprintStartDate">' + project.sprints[i].startDate +
+            '</label><br><label>Completion date: </label><label id="' + project.sprints[i].sprintId + 'SprintCompletionDate">' + project.sprints[i].completionDate + '</label>';
         sprints.appendChild(sprintInfo);
 
         var table = document.createElement('table');
@@ -83,18 +83,18 @@ function tableCreate(project) {
         var tableBody = document.createElement('tbody');
         var tableHead = document.createElement('thead');
 
-        tableHead.innerHTML = ' <tr>'+
-            '<th>No.</th>'+
-            '<th>Task</th>'+
-            '<th style="width: 40%;">Description</th>'+
-            '<th>Start date</th>'+
-            '<th>Actual Start date</th>'+
-            '<th>Estimate</th>'+
-            '<th>Predicted Delay</th>'+
-            '<th>Completion Time</th>'+
-            '<th>Actual Completion Time</th>'+
-            '<th>Pred.</th>'+
-            '<th>Resource Names</th>'+
+        tableHead.innerHTML = ' <tr>' +
+            '<th>No.</th>' +
+            '<th>Task</th>' +
+            '<th style="width: 40%;">Description</th>' +
+            '<th>Start date</th>' +
+            '<th>Actual Start date</th>' +
+            '<th>Estimate</th>' +
+            '<th>Predicted Delay</th>' +
+            '<th>Completion Time</th>' +
+            '<th>Actual Completion Time</th>' +
+            '<th>Pred.</th>' +
+            '<th>Resource Names</th>' +
             '</tr>';
         sprints.appendChild(table);
 
@@ -128,8 +128,8 @@ function tableCreate(project) {
             tdEstimate.innerHTML = task.estimate;
             tdPredicatedDelay.innerHTML = task.predictedDelay;
 
-            if(task.actualStartDate != null) {
-                if(new Date(task.actualStartDate) > new Date(task.startDate)) {
+            if (task.actualStartDate != null) {
+                if (new Date(task.actualStartDate) > new Date(task.startDate)) {
                     tr.setAttribute('class', 'alert alert-danger');
                     tr.setAttribute('title', 'task started with a delay');
                     tr.setAttribute('data-toggle', 'tooltip');
@@ -137,8 +137,8 @@ function tableCreate(project) {
                 tdActualStartTime.innerHTML = task.actualStartDate;
             }
 
-            if(task.actualCompletionDate != null) {
-                if(new Date(task.actualCompletionDate) > new Date(task.completionDate)) {
+            if (task.actualCompletionDate != null) {
+                if (new Date(task.actualCompletionDate) > new Date(task.completionDate)) {
                     tr.setAttribute('class', 'alert alert-danger');
                     tr.setAttribute('title', 'Task completed with a delay');
                     tr.setAttribute('data-toggle', 'tooltip');
@@ -150,13 +150,13 @@ function tableCreate(project) {
                 tdActualCompletionTime.innerHTML = task.actualCompletionDate;
             }
 
-            if(typeof task.previousTask !== "undefined"  && task.previousTask != null) {
+            if (typeof task.previousTask !== "undefined" && task.previousTask != null) {
                 tdPred.innerHTML = tasks[task.previousTask.taskId];
             }
 
             tdCompletionTime.innerHTML = task.completionDate;
-            if(task.employees != null) {
-                tdResourceNames.innerHTML = task.employees.map(function(e){
+            if (task.employees != null) {
+                tdResourceNames.innerHTML = task.employees.map(function (e) {
                     return e.name + " " + e.surname;
                 }).join(".<br>");
             }
@@ -181,8 +181,8 @@ function tableCreate(project) {
 
 
 function onLoad() {
-    var selectedProject=getParameterByName('selectedProject');
-    if(typeof selectedProject === "undefined"  || selectedProject == null) {
+    var selectedProject = getParameterByName('selectedProject');
+    if (typeof selectedProject === "undefined" || selectedProject == null) {
     } else {
         selectProject(selectedProject);
     }

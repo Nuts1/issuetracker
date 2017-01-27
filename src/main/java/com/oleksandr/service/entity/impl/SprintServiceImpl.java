@@ -64,6 +64,13 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override
+    public Statistic getStatisticTask(long id) {
+        Statistic statistic = new Statistic();
+        statistic.setStatistic(dao.getStatisticTask(id));
+        return statistic;
+    }
+
+    @Override
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public boolean delete(Long sprintId) {
         List<SprintDto> sprints = dao.getAllDependentSprintDto(sprintId); // dependentSprint.previous_sprint_id = sprintId;

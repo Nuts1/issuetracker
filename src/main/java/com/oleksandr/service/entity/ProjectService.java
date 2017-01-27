@@ -27,5 +27,7 @@ public interface ProjectService {
 
     Statistic getStatistic(long id);
 
+    Statistic getStatisticTask(long id);
+
     List<Project> getAllNameAndIdByCustomerId(long employeeId);
 }

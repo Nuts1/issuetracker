@@ -24,7 +24,7 @@ public interface EmployeeDao {
 
     List<Employee> getEmployeeFromTask(long id);
 
-    List<Employee> getByDeptIdAndPosId(long idDep, long idPo);
+    List<Employee> getByDeptIdAndPosId(Long idDep, Long idPo);
 
     List<Employee> getByProjectId(long idProject);
 

@@ -40,7 +40,8 @@ public class TaskDaoJdbc implements TaskDao {
             "actual_completion_date AS actual_completion_date, " +
             "actual_start_date AS actual_start_date " +
             "FROM task " +
-            "WHERE sprint_id = ?";
+            "WHERE sprint_id = ?" +
+            "ORDER BY start_date";
 
     private static final String SELECT_BY_EMPLOYEE_ID = "SELECT task_id AS task_id, " +
             "t.name AS name, " +
@@ -55,7 +56,8 @@ public class TaskDaoJdbc implements TaskDao {
             "actual_completion_date AS actual_completion_date, " +
             "actual_start_date AS actual_start_date " +
             "FROM task t INNER JOIN task_employee te USING(task_id) " +
-            "WHERE te.employee_id = ?";
+            "WHERE te.employee_id = ?" +
+            "ORDER BY t.start_date";
 
     private static final String SELECT_BY_ID = "SELECT task_id AS task_id, " +
             "name AS name, " +
@@ -82,9 +84,10 @@ public class TaskDaoJdbc implements TaskDao {
             "description AS description, " +
             "completion_date AS completion_date, " +
             "predicted_delay AS predicted_delay, " +
+            "load AS load, " +
             "actual_completion_date AS actual_completion_date, " +
             "actual_start_date AS actual_start_date " +
-            "FROM task " +
+            "FROM task INNER JOIN task_employee te USING(task_id)" +
             "WHERE task_id = ?";
 
     private static final String SELECT_DTO_BY_PREVIOUS_TASK_ID = "SELECT task_id AS task_id, " +
@@ -97,14 +100,16 @@ public class TaskDaoJdbc implements TaskDao {
             "description AS description, " +
             "completion_date AS completion_date, " +
             "predicted_delay AS predicted_delay, " +
+            "load AS load, " +
             "actual_completion_date AS actual_completion_date, " +
             "actual_start_date AS actual_start_date " +
-            "FROM task " +
-            "WHERE task_id = ?";
+            "FROM task LEFT JOIN task_employee te USING(task_id)" +
+            "WHERE previous_task_id = ? " +
+            "ORDER BY start_date";
 
     private static final String SAVE_TASK = "INSERT INTO task " +
-            "(task_id, name, start_date, estimate, sprint_id, previous_task_id, description, completion_date, predicted_delay)" +
-            " VALUES ( nextval('seq') , ?, ?, ?, ?, ?, ?, ?, ?)  RETURNING task_id";
+            "(task_id, name, start_date, estimate, sprint_id, previous_task_id, description, completion_date, predicted_delay, actual_start_date)" +
+            " VALUES ( nextval('seq') , ?, ?, ?, ?, ?, ?, ?, ?, ?)  RETURNING task_id";
 
     private static final String SAVE_TASK_EMPLOYEE = "INSERT INTO task_employee" +
             "(id_task_employee, task_id, employee_id, confirm, load)" +
@@ -124,6 +129,11 @@ public class TaskDaoJdbc implements TaskDao {
             "description = ?," +
             "completion_date = ?," +
             "predicted_delay = ? " +
+            "WHERE task_id = ?";
+
+
+    private static final String SET_ACTUAL_START_DATE = "UPDATE task " +
+            "SET actual_start_date = ? " +
             "WHERE task_id = ?";
 
     private static final String SET_ACTUAL_COMPLETE_DATE = "UPDATE task " +
@@ -214,14 +224,56 @@ public class TaskDaoJdbc implements TaskDao {
             PreparedStatement statement = connection.prepareStatement(SELECT_DTO_BY_ID);
             statement.setLong(1, id);
             resultSet = statement.executeQuery();
-            TaskDto task = mapDto(resultSet);
-            close(statement);
-            return task;
+            if(resultSet.next()) {
+                TaskDto task = mapDto(resultSet);
+                close(statement);
+                return task;
+            } else {
+                return null;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
         } finally {
             close(connection, resultSet);
+        }
+    }
+
+    @Override
+    public void setActualCompletionDate(Long idTask, Date time) {
+        Connection connection = null;
+        try {
+            connection = dataSource.getConnection();
+            connection.setAutoCommit(false);
+            PreparedStatement statement = connection.prepareStatement(SET_ACTUAL_COMPLETE_DATE);
+            statement.setTimestamp(1, new Timestamp(time.getTime()));
+            statement.setLong(2,idTask);
+            statement.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            rollBack(connection, e);
+            e.printStackTrace();
+        } finally {
+            close(connection);
+        }
+    }
+
+    @Override
+    public void setActualStartDate(Long idTask, Date time) {
+        Connection connection = null;
+        try {
+            connection = dataSource.getConnection();
+            connection.setAutoCommit(false);
+            PreparedStatement statement = connection.prepareStatement(SET_ACTUAL_START_DATE);
+            statement.setTimestamp(1, new Timestamp(time.getTime()));
+            statement.setLong(2,idTask);
+            statement.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            rollBack(connection, e);
+            e.printStackTrace();
+        } finally {
+            close(connection);
         }
     }
 
@@ -308,6 +360,7 @@ public class TaskDaoJdbc implements TaskDao {
             statement.setTimestamp(6, new Timestamp(task.getCompletionDate().getTime()));
             statement.setLong(7, task.getPredictedDelay());
             statement.setLong(8, task.getIdTask());
+
             rows =+ statement.executeUpdate();
 
             PreparedStatement preparedStatement = connection
@@ -418,6 +471,11 @@ public class TaskDaoJdbc implements TaskDao {
         statement.setString(6, task.getDescription());
         statement.setTimestamp(7, new Timestamp(task.getCompletionDate().getTime()));
         statement.setLong(8, task.getPredictedDelay());
+        if(task.getActualStartDate() != null) {
+            statement.setTimestamp(9, new Timestamp(task.getActualStartDate().getTime()));
+        } else {
+            statement.setNull(9, Types.TIMESTAMP);
+        }
     }
 
 
@@ -491,8 +549,10 @@ public class TaskDaoJdbc implements TaskDao {
     private TaskDto mapDto(ResultSet resultSet) throws SQLException {
         TaskDto task = new TaskDto();
         task.setName(resultSet.getString("name"));
+        task.setIdTask(resultSet.getLong("task_id"));
         task.setStartDate(new java.util.Date(resultSet.getTimestamp("start_date").getTime()));
         task.setCompletionDate(new java.util.Date(resultSet.getTimestamp("completion_date").getTime()));
+        task.setPreviousTaskId(resultSet.getString("previous_task_id"));
         task.setLoad(resultSet.getInt("load"));
         task.setEstimate(resultSet.getInt("estimate"));
         Timestamp timestamp = resultSet.getTimestamp("actual_completion_date");

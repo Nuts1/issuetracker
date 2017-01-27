@@ -52,7 +52,7 @@ public class ManagerTaskRest {
 
     @JsonView(Views.Summary.class)
     @RequestMapping(value = "/manager/getTask")
-    public com.oleksandr.entity.Task getTask(@RequestBody String idTask) {
+    public com.oleksandr.entity.Task getTask(@RequestParam String idTask) {
         try {
             long id = Long.parseLong(idTask);
             return taskService.getById(id);

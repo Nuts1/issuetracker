@@ -13,6 +13,8 @@ import java.util.List;
  * 6:08 PM.
  */
 public interface SprintDao {
+    LinkedHashMap<String, String> getStatisticTask(long id);
+
     List<Sprint> getByProjectId(long id);
     Sprint getById(long id);
     SprintDto getDtoById(long id);

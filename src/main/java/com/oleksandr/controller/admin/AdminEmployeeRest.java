@@ -89,6 +89,11 @@ public class AdminEmployeeRest {
         return roleService.getAll();
     }
 
+    @RequestMapping(value = "/admin/deleteEmployee")
+    public void deleteEmployee(@RequestParam long employeeId) {
+        employeeService.delete(employeeId);
+    }
+
     @JsonView(Views.Summary.class)
     @RequestMapping(value = "/admin/getQualification")
     public List<Qualification> getQualification() {

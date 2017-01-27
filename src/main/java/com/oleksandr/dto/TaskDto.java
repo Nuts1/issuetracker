@@ -167,33 +167,41 @@ public class TaskDto {
     }
 
     public Long[] getIds() {
-        String[] strings = employeeIds
-                .substring(1, employeeIds.length() - 1)
-                .split(",");
-        Long[] ids = new Long[strings.length];
-        for (int i = 0; i < strings.length; i++) {
-            try {
-                ids[i] = Long.parseLong(strings[i]);
-            } catch (NumberFormatException e) {
-                return null;
+        if(employeeIds != null) {
+            String[] strings = employeeIds
+                    .substring(1, employeeIds.length() - 1)
+                    .split(",");
+            Long[] ids = new Long[strings.length];
+            for (int i = 0; i < strings.length; i++) {
+                try {
+                    ids[i] = Long.parseLong(strings[i]);
+                } catch (NumberFormatException e) {
+                    return null;
+                }
             }
+            return ids;
+        } else {
+            return null;
         }
-        return ids;
     }
 
     public Integer[] getUnits() {
-        String[] strings = employeeUnits
-                .substring(1, employeeUnits.length() - 1)
-                .split(",");
-        Integer[] ids = new Integer[strings.length];
-        for (int i = 0; i < strings.length; i++) {
-            try {
-                ids[i] = Integer.parseInt(strings[i]);
-            } catch (NumberFormatException e) {
-                return null;
+        if (employeeUnits != null) {
+            String[] strings = employeeUnits
+                    .substring(1, employeeUnits.length() - 1)
+                    .split(",");
+            Integer[] ids = new Integer[strings.length];
+            for (int i = 0; i < strings.length; i++) {
+                try {
+                    ids[i] = Integer.parseInt(strings[i]);
+                } catch (NumberFormatException e) {
+                    return null;
+                }
             }
+            return ids;
+        } else {
+            return null;
         }
-        return ids;
     }
 
     @Override

@@ -100,6 +100,27 @@ public class SprintDaoJdbc implements SprintDao {
             "WHERE sprint_id = ? AND t.actual_completion_date IS NOT NULL\n" +
             "GROUP BY sprint_id\n";
 
+    private static final String PROJECT_TASK_STATISTIC = "SELECT 'Count tasks with delay', COUNT(task_id) " +
+            "FROM project INNER JOIN sprint s USING(project_id)\n" +
+            "INNER JOIN task t USING(sprint_id)\n" +
+            "WHERE sprint_id = ?  AND\n" +
+            "  t.actual_completion_date > t.completion_date\n" +
+            "GROUP BY sprint_id\n" +
+            "UNION ALL\n" +
+            "SELECT 'Count tasks finished in time', COUNT(task_id) " +
+            "FROM project INNER JOIN sprint s USING(project_id)\n" +
+            "INNER JOIN task t USING(sprint_id)\n" +
+            "WHERE sprint_id = ?  AND\n" +
+            "  t.actual_completion_date <= t.completion_date\n" +
+            "GROUP BY sprint_id\n" +
+            "UNION ALL\n" +
+            "SELECT 'Count tasks', COUNT(task_id) " +
+            "FROM project INNER JOIN sprint s USING(project_id)\n" +
+            "INNER JOIN task t USING(sprint_id)\n" +
+            "WHERE sprint_id = ? \n" +
+            "GROUP BY sprint_id\n";
+
+
     private static final String SELECT_TASK_WITH_DELAY = "SELECT 'Task: ' || t.name, 'Delay: ' || (te.load / 100.0) * \n" +
             "((EXTRACT(EPOCH FROM(actual_completion_date - t.completion_date))/86400)::FLOAT * 24 \n" +
             "- (EXTRACT(EPOCH FROM(actual_completion_date - t.completion_date)/86400)::INTEGER*16))\n" +
@@ -163,6 +184,28 @@ public class SprintDaoJdbc implements SprintDao {
     @Autowired
     public SprintDaoJdbc(TaskDao taskDao) {
         this.taskDao = taskDao;
+    }
+
+    @Override
+    public LinkedHashMap<String, String> getStatisticTask(long id) {
+        Connection connection = null;
+        ResultSet resultSet = null;
+        try {
+            connection = dataSource.getConnection();
+
+            PreparedStatement statement = connection.prepareStatement(PROJECT_TASK_STATISTIC);
+            statement.setLong(1, id);
+            statement.setLong(2, id);
+            statement.setLong(3, id);
+
+            resultSet = statement.executeQuery();
+            return ProjectDaoJdbc.mapStatistic(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            close(connection, resultSet);
+        }
     }
 
     @Override

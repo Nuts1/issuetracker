@@ -90,6 +90,19 @@ public class ManagerSprintRest {
         }
     }
 
+    @JsonView(Views.Summary.class)
+    @RequestMapping(value = "/manager/sprintStatisticDashboard")
+    public Statistic getProjectStatisticDashboard(@RequestParam String idSprint) {
+        try {
+            long idPr = Long.parseLong(idSprint);
+            Statistic statistic = sprintService.getStatisticTask(idPr);
+            return statistic;
+        } catch (NumberFormatException ignore) {
+            return null;
+        }
+    }
+
+
     @JsonView(Views.SprintDateIdPrevIdAndName.class)
     @RequestMapping(value = "/manager/sprintInfo")
     public Sprint getSprint(@RequestParam("idSprint") String idSprint) {

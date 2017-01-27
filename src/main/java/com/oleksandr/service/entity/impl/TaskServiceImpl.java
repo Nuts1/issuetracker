@@ -56,6 +56,7 @@ public class TaskServiceImpl implements TaskService {
         dao.delete(id);
     }
 
+
     @Override
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public int update(TaskDto taskWithResourcesDto) {
@@ -79,13 +80,35 @@ public class TaskServiceImpl implements TaskService {
                 return "Previous task not complete";
             } else {
                 Calendar calendar = Calendar.getInstance();
-                dao.setActualCompleteDate(taskId, calendar.getTime());
+                Date actualCompletionDate = calendar.getTime();
+                dao.setActualCompleteDate(taskId, actualCompletionDate);
+                setActualStartDateAndPlanedCompletionDate(taskId, actualCompletionDate);
                 return "Success";
             }
         } else {
             Calendar calendar = Calendar.getInstance();
-            dao.setActualCompleteDate(taskId, calendar.getTime());
+            Date actualCompletionDate = calendar.getTime();
+            dao.setActualCompleteDate(taskId, actualCompletionDate);
+            setActualStartDateAndPlanedCompletionDate(taskId, actualCompletionDate);
             return "Success";
+        }
+    }
+
+    private void setActualStartDateAndPlanedCompletionDate(long id, Date actualStartDate) {
+        List<TaskDto> dependentTask = dao.getAllDependentTaskDto(id);
+        if(dependentTask != null) {
+            dependentTask.forEach(e -> {
+                int estimate = e.getEstimate();
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(actualStartDate);
+                dao.setActualStartDate(e.getIdTask(), calendar.getTime());
+                int hours = estimate + calendar.get(Calendar.HOUR_OF_DAY) - 8;
+                int days = hours / 8;
+                int time = hours - days * 8;
+                calendar.add(Calendar.DATE, days);
+                calendar.set(Calendar.HOUR_OF_DAY, time + 8);
+                dao.setActualCompletionDate(e.getIdTask(), calendar.getTime());
+            });
         }
     }
 

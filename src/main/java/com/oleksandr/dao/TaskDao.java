@@ -4,6 +4,7 @@ import com.oleksandr.dto.TaskDto;
 import com.oleksandr.entity.Task;
 
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -32,4 +33,8 @@ public interface TaskDao {
     List<TaskDto> getAllDependentTaskDto(long id);
 
     TaskDto getDtoById(long id);
+
+    void setActualCompletionDate(Long idTask, Date time);
+
+    void setActualStartDate(Long idTask, Date time);
 }

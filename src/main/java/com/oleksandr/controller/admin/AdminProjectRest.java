@@ -64,6 +64,12 @@ public class AdminProjectRest {
                 .collect(Collectors.toList());
     }
 
+    @RequestMapping(value = "/admin/deleteProject")
+    public void deleteProject(@RequestParam long projectId) {
+        projectService.delete(projectId);
+    }
+
+
 
     @JsonView(Views.ProjectNameAndID.class)
     @RequestMapping(value = "/admin/projectList")

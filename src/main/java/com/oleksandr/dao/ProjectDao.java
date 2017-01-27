@@ -33,5 +33,7 @@ public interface ProjectDao {
 
     LinkedHashMap<String,String> getStatistic(long id);
 
+    LinkedHashMap<String, String> getStatisticTask(long id);
+
     List<Project> getAllNameAndIdByCustomerId(long employeeId);
 }

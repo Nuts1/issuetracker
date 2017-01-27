@@ -79,8 +79,8 @@ public class EmployeeDaoJdbc implements EmployeeDao {
             "e.email as email, " +
             "e.department_id AS department_id " +
             "FROM employee e " +
-            "WHERE e.position_id = ? AND " +
-            "e.department_id = ? ";
+            "WHERE (e.position_id = ? OR ? IS NULL) AND " +
+            "(e.department_id = ?  OR ? IS NULL)";
 
     private static final String SELECT_BY_PROJECT_ID = "SELECT DISTINCT employee_id AS employee_id, " +
             "e.name AS name," +
@@ -369,14 +369,26 @@ public class EmployeeDaoJdbc implements EmployeeDao {
     }
 
     @Override
-    public List<Employee> getByDeptIdAndPosId(long idDep, long idPo) {
+    public List<Employee> getByDeptIdAndPosId(Long idDep, Long idPo) {
         Connection connection = null;
         ResultSet resultSet = null;
         try {
             connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(SELECT_BY_DEPT_ID_AND_POS_ID);
-            statement.setLong(1, idPo);
-            statement.setLong(2, idDep);
+            if(idPo != null) {
+                statement.setLong(1, idPo);
+                statement.setLong(2, idPo);
+            } else {
+                statement.setNull(1, Types.BIGINT);
+                statement.setNull(2, Types.BIGINT);
+            }
+            if(idDep != null) {
+                statement.setLong(3, idDep);
+                statement.setLong(4, idDep);
+            } else {
+                statement.setNull(3, Types.BIGINT);
+                statement.setNull(4, Types.BIGINT);
+            }
             resultSet = statement.executeQuery();
             List<Employee> employees = mapEmployees(resultSet);
             close(statement);

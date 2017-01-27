@@ -1,6 +1,7 @@
 package com.oleksandr.service.entity;
 
 import com.oleksandr.dto.TaskDto;
+import com.oleksandr.service.reports.data.project.Statistic;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;

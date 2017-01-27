@@ -51,9 +51,14 @@ public class ManagerEmployeeRest {
     @RequestMapping(value = "/manager/applyFilter")
     public List<Employee> applyFilter(@RequestParam("idDept") String idDept,
                                       @RequestParam("idPos") String idPos) {
+        Long idDep = null;
         try {
-            long idDep = Long.parseLong(idDept);
-            long idPo = Long.parseLong(idPos);
+            idDep = Long.parseLong(idDept);
+        } catch (NumberFormatException e) {
+
+        }
+        try {
+            Long idPo = Long.parseLong(idPos);
             return employeeService.getByDeptIdAndPosId(idDep, idPo);
         } catch (NumberFormatException ignore) {
         }

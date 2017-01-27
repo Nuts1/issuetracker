@@ -70,6 +70,13 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    public Statistic getStatisticTask(long id) {
+        Statistic statistic = new Statistic();
+        statistic.setStatistic(dao.getStatisticTask(id));
+        return statistic;
+    }
+
+    @Override
     public List<Project> getAllNameAndIdByCustomerId(long employeeId) {
         return dao.getAllNameAndIdByCustomerId(employeeId);
     }

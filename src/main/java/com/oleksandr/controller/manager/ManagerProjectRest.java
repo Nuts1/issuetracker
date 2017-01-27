@@ -41,6 +41,17 @@ public class ManagerProjectRest {
         }
     }
 
+    @JsonView(Views.Summary.class)
+    @RequestMapping(value = "/manager/projectStatisticDashboard")
+    public Statistic getProjectStatisticDashboard(@RequestParam String idProject) {
+        try {
+            long idPr = Long.parseLong(idProject);
+            Statistic statistic = projectService.getStatisticTask(idPr);
+            return statistic;
+        } catch (NumberFormatException ignore) {
+            return null;
+        }
+    }
 
     @JsonView(Views.Summary.class)
     @RequestMapping(value = "/manager/project")

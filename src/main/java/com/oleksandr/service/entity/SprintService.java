@@ -23,5 +23,7 @@ public interface SprintService {
 
     Statistic getStatistic(long idPr);
 
+    Statistic getStatisticTask(long id);
+
     boolean delete(Long sprintId);
 }
