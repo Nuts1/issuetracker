@@ -37,28 +37,29 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private List<SimpleGrantedAuthority> getAuthorities(String role) {
         List<SimpleGrantedAuthority> authList = new ArrayList<>();
-        /*
-        if (role != null && role.trim().length() > 0) {
-            if (role.equalsIgnoreCase(EmployeeRole.ADMIN.toString())) {
-                authList.add(new SimpleGrantedAuthority(EmployeeRole.ADMIN.toString()));
-            }
-            if (role.equalsIgnoreCase(EmployeeRole.EMPLOYEE.toString())) {
-                authList.add(new SimpleGrantedAuthority(EmployeeRole.EMPLOYEE.toString()));
-            }
-            if (role.equalsIgnoreCase("ROLE_CUSTOMER")) {
-                authList.add(new SimpleGrantedAuthority("ROLE_CUSTOMER"));
-            }
-            if (role.equalsIgnoreCase("ROLE_MANAGER")) {
-                authList.add(new SimpleGrantedAuthority("ROLE_MANAGER"));
-            }
-        }
-        */
-        try {
-            authList.add(new SimpleGrantedAuthority(EmployeeRole.valueOf(role).name()));
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        }
 
+
+        if (role != null && role.trim().length() > 0) {
+            role = role.trim();
+            System.out.printf(role);
+            if (role.equalsIgnoreCase(EmployeeRole.ROLE_ADMIN.toString())) {
+                authList.add(new SimpleGrantedAuthority(EmployeeRole.ROLE_ADMIN.toString()));
+                System.out.println("A");
+            }
+            if (role.equalsIgnoreCase(EmployeeRole.ROLE_EMPLOYEE.toString())) {
+                authList.add(new SimpleGrantedAuthority(EmployeeRole.ROLE_EMPLOYEE.toString()));
+                System.out.println("A");
+            }
+            if (role.equalsIgnoreCase(EmployeeRole.ROLE_MANAGER.toString())) {
+                authList.add(new SimpleGrantedAuthority(EmployeeRole.ROLE_MANAGER.toString()));
+                System.out.println("A");
+            }
+            if (role.equalsIgnoreCase(EmployeeRole.ROLE_CUSTOMER.toString())) {
+                authList.add(new SimpleGrantedAuthority(EmployeeRole.ROLE_CUSTOMER.toString()));
+                System.out.println("A");
+            }
+        }
         return authList;
     }
 }
+

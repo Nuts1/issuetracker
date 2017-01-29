@@ -14,6 +14,13 @@ function setSprints(idProject) {
         success: function (data) {
             var sprints = document.getElementById('preliminarySprints');
             sprints.innerHTML = '';
+
+            var option = document.createElement('option');
+            option.value = '';
+            option.innerHTML = "Have no preliminary sprints";
+            sprints.appendChild(option);
+
+
             for (var i = 0; i < data.length; i++) {
                 if (sprintId != parseInt(data[i].sprintId)) {
                     sprintsCompletionDate[data[i].sprintId] = data[i].completionDate;
@@ -48,6 +55,9 @@ function validateSprintForm() {
         if (form.elements[i].value === '' && form.elements[i].hasAttribute('required')) {
             validationInfo = validationInfo + (form.elements[i].name + ' is required field!<br>');
         }
+    }
+    if(sprintStartDate.getDay() === 6 || startDate.getDay() === 0) {
+        validationInfo = validationInfo + "Error you cannot select a weekend";
     }
 
     var index = document.getElementById('preliminarySprints').value;

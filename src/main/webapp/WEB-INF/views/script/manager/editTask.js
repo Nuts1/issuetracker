@@ -10,6 +10,8 @@ var sprintStartDate;
 
 var minHh;
 
+var selected;
+
 Date.prototype.yyyymmdd = function () {
     //Grab each of your components
     var yyyy = this.getFullYear().toString();
@@ -140,7 +142,6 @@ function updatePosition(data) {
 
     developerPosition.appendChild(option);
 
-
     for (var i = 0; i < data.length; i++) {
         option = document.createElement('option');
         option.setAttribute('id', data[i].positionId);
@@ -192,17 +193,23 @@ function setMinDate() {
     minHh = preliminaryTasks[preliminaryTaskId].hh();
     console.log(minHh);
     startTime.value = minHh;
+    changeCompletionDate();
 }
 
 function updatePreliminaryTask(data) {
     var preliminaryTask = document.getElementById('preliminaryTask');
     if (typeof(data) !== "undefined" && data !== null) {
         preliminaryTask.innerHTML = '';
+        var option = document.createElement('option');
+        option.value = '';
+        option.innerHTML = 'Have no preliminary task';
+        preliminaryTask.appendChild(option);
+
         for (var i = 0; i < data.length; i++) {
             if (idCurrentTask != data[i].taskId) {
                 preliminaryTasks[data[i].taskId] = new Date(data[i].completionDate);
 
-                var option = document.createElement('option');
+                option = document.createElement('option');
                 option.setAttribute('id', data[i].taskId);
                 option.setAttribute('value', data[i].taskId);
                 option.innerHTML = data[i].name + '. Completion: ' + data[i].completionDate;
@@ -226,6 +233,10 @@ function validateForm() {
 
     startDate = new Date(document.getElementById('startDate').value);
     completionDate = new Date(document.getElementById('completionDate').value);
+
+    if(startDate.getDay() === 6 || startDate.getDay() === 0) {
+        validationInfo = validationInfo + "Error you cannot select a weekend";
+    }
 
     if (startDate > sprintCompletionDate) {
         validationInfo = validationInfo + "Start date after sprint completion date<br>";
@@ -282,9 +293,18 @@ function changeCompletionDate() {
         time = hours - days * 8;
         completionTime.selectedIndex = time;
     }
+
     var date = new Date(startDate.value);
+    var endDate = new Date(startDate.value);
+    var count = 0;
+    while(count < days){
+        endDate = new Date(date.setDate(date.getDate() + 1));
+        if(endDate.getDay() != 5 && endDate.getDay() != 6){
+            count++;
+        }
+    }
     date.setDate(date.getDate() + days);
-    completionDate.valueAsDate = date;
+    completionDate.valueAsDate = endDate;
 }
 
 function Update(formData, url) {
@@ -413,5 +433,6 @@ function onLoad() {
     setPosition();
     setTaskData(idCurrentTask);
 }
+
 
 document.onload = onLoad();

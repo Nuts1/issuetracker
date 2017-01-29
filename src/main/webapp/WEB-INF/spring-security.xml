@@ -9,17 +9,17 @@ http://www.springframework.org/schema/security/spring-security.xsd">
     <http auto-config="true"  use-expressions="true" disable-url-rewriting="true">
         <access-denied-handler error-page="/403" />
 
-        <!--<intercept-url pattern="/login" access="permitAll"/>
+        <intercept-url pattern="/login" access="permitAll"/>
         <intercept-url pattern="/logout" access="permitAll"/>
         <intercept-url pattern="/admin/*" access="hasRole('ROLE_ADMIN')"/>
         <intercept-url pattern="/manager/*" access="hasRole('ROLE_MANAGER')"/>
         <intercept-url pattern="/employee/*" access="hasRole('ROLE_EMPLOYEE')"/>
         <intercept-url pattern="/customer/*" access="hasRole('ROLE_CUSTOMER')"/>
-        <intercept-url pattern="/403" access="permitAll"/>
+        <intercept-url pattern="/403*" access="permitAll"/>
         <form-login login-processing-url="/login" login-page="/loginForm"
                     authentication-failure-url="/403" username-parameter="email" password-parameter="password"
-                    always-use-default-target='true'/>
-        <logout logout-success-url="/logout"/>-->
+                    always-use-default-target='true' default-target-url="/routing"/>
+        <logout logout-url="/logout" logout-success-url="/loginForm"/>
         <csrf disabled="true"/>
     </http>
 

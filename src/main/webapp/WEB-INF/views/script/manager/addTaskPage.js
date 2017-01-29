@@ -218,12 +218,17 @@ function setMinDate() {
     minHh = preliminaryTasks[preliminaryTaskId].hh();
     console.log(minHh);
     startTime.value = minHh;
+    changeCompletionDate();
 }
 
 function updatePreliminaryTask(data) {
     var preliminaryTask = document.getElementById('preliminaryTask');
     if (typeof(data) !== "undefined" && data !== null) {
         preliminaryTask.innerHTML = '';
+        var option = document.createElement('option');
+        option.value = '';
+        option.innerHTML = 'Have no preliminary task';
+        preliminaryTask.appendChild(option);
         for (var i = 0; i < data.length; i++) {
             if (idCurrentTask != data[i].taskId) {
                 if(data[i].actualCompletionDate == null)
@@ -231,7 +236,7 @@ function updatePreliminaryTask(data) {
                 else
                     preliminaryTasks[data[i].taskId] = new Date(data[i].actualCompletionDate);
 
-                var option = document.createElement('option');
+                option = document.createElement('option');
                 option.setAttribute('id', data[i].taskId);
                 option.setAttribute('value', data[i].taskId);
                 option.innerHTML = data[i].name + '. Completion: ' + data[i].completionDate;
@@ -268,6 +273,10 @@ function validateForm() {
         return false;
     }
 
+    if(startDate.getDay() === 6 || startDate.getDay() === 0) {
+        validationInfo = validationInfo + "Error you cannot select a weekend";
+    }
+
     if (startDate > sprintCompletionDate) {
         validationInfo = validationInfo + "Start date after sprint completion date<br>";
     }
@@ -299,11 +308,11 @@ function changeCompletionDate() {
     var completionDate = document.getElementById('completionDate');
     var completionTime = document.getElementById('completionTime');
     var startDate = document.getElementById('startDate');
-    var selectedOption = startTime.options[startTime.selectedIndex];
+    var selectedOptionTime = startTime.options[startTime.selectedIndex];
 
     if (startDate.value == startDate.getAttribute('min')) {
-        if (typeof(selectedOption) !== "undefined" && selectedOption !== null) {
-            if (parseInt(selectedOption.value) < parseInt(minHh)) {
+        if (typeof(selectedOptionTime) !== "undefined" && selectedOptionTime !== null) {
+            if (parseInt(selectedOptionTime.value) < parseInt(minHh)) {
                 startTime.selectedIndex = minHh - 8;
             }
         }
@@ -314,8 +323,8 @@ function changeCompletionDate() {
     var time;
     var days;
     var hours;
-    if (typeof(selectedOption) !== "undefined" && selectedOption !== null) {
-        hours = (parseInt(estimate) + (parseInt(selectedOption.value) - 8));
+    if (typeof(selectedOptionTime) !== "undefined" && selectedOptionTime !== null) {
+        hours = (parseInt(estimate) + (parseInt(selectedOptionTime.value) - 8));
         days = parseInt(hours / 8);// 8 - work hours
         time = hours - days * 8;
         completionTime.selectedIndex = time;
@@ -325,9 +334,18 @@ function changeCompletionDate() {
         time = hours - days * 8;
         completionTime.selectedIndex = time;
     }
+
     var date = new Date(startDate.value);
+    var endDate = new Date(startDate.value);
+    var count = 0;
+    while(count < days){
+        endDate = new Date(date.setDate(date.getDate() + 1));
+        if(endDate.getDay() != 5 && endDate.getDay() != 6){
+            count++;
+        }
+    }
     date.setDate(date.getDate() + days);
-    completionDate.valueAsDate = date;
+    completionDate.value = endDate;
 }
 
 function saveTask(formData) {
@@ -384,6 +402,7 @@ function onLoad() {
     idCurrentTask = parseInt(getParameterByName('idCurrentTask'));
     if (!isNaN(idCurrentTask)) {
         setTaskData(idCurrentTask);
+        changeCompletionDate();
     }
 }
 

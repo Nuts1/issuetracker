@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import static com.oleksandr.validator.constant.SprintConstant.COMPLETION_DATE;
@@ -34,6 +35,13 @@ public class TaskValidator {
             errors.rejectValue(START_DATE, "task.startDateLaterCompletionDate");
         }
 
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(task.getStartDate());
+
+        if(cal.get(Calendar.DAY_OF_WEEK) == 1 || cal.get(Calendar.DAY_OF_WEEK) == 7) {
+            errors.rejectValue(START_DATE, "task.startInWeekends");
+        }
+
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, NAME, "task.nameNull");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, DESCRIPTION, "task.descriptionNull");
     }
@@ -47,6 +55,13 @@ public class TaskValidator {
 
         if (task.getActualCompletionDate() != null) {
             errors.reject("task.changeCompleted");
+        }
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(task.getStartDate());
+
+        if(cal.get(Calendar.DAY_OF_WEEK) == 1 || cal.get(Calendar.DAY_OF_WEEK) == 7) {
+            errors.rejectValue(START_DATE, "task.startInWeekends");
         }
 
         ValidationUtils.rejectIfEmpty(errors, ID_TASK, "task.idNull");

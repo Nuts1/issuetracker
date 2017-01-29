@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
+import java.util.Calendar;
+
 import static com.oleksandr.validator.constant.SprintConstant.*;
 
 /**
@@ -33,6 +35,13 @@ public class SprintValidator {
             errors.rejectValue(START_DATE, "sprint.startDateLaterCompletionDate");
         }
 
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(sprint.getStartDate());
+
+        if(cal.get(Calendar.DAY_OF_WEEK) == 1 || cal.get(Calendar.DAY_OF_WEEK) == 7) {
+            errors.rejectValue(START_DATE, "sprint.startInWeekends");
+        }
+
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, NAME, "sprint.nameNull");
     }
 
@@ -44,12 +53,19 @@ public class SprintValidator {
             errors.rejectValue(START_DATE, "sprint.startDateLaterCompletionDate");
         }
 
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(sprint.getStartDate());
+
+        if(cal.get(Calendar.DAY_OF_WEEK) == 1 || cal.get(Calendar.DAY_OF_WEEK) == 7) {
+            errors.rejectValue(START_DATE, "sprint.startInWeekends");
+        }
+
         ValidationUtils.rejectIfEmpty(errors, ID_SPRINT, "sprint.idNull");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, NAME, "sprint.nameNull");
     }
 
     private void validateLinkWithPreviousSprint(SprintDto sprint, Errors errors) {
-        if (sprint.getPreviousSprint() != null) {
+        if (sprint.getPreviousSprint() != null && sprint.getPreviousSprint().length() > 0) {
             long id = Long.parseLong(sprint.getPreviousSprint());
             Sprint previous = sprintService.getById(id);
             if (previous.getPreviousSprint() != null &&

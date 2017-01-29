@@ -133,42 +133,46 @@ public class ResourceListServiceImpl {
         }
 
         List<DayWork> dayToWorks = new ArrayList<>();
-
+        DayWork dayWork;
+        double hoursSpendOnTaskInDay;
         // startDay
-        int hourStartTask = startDate.get(HOUR_OF_DAY);
-        DayWork dayWork = new DayWork();
-        resetTime(startDate);
-        dayWork.setDate(startDate.getTime());
-        double hoursSpendOnTaskInDay = ((16 - hourStartTask) * load);
-        dayWork.setWorks(hoursSpendOnTaskInDay); // 8 - hours in work day
-        setTotalDayWorks(totalDayWorks, startDate, hoursSpendOnTaskInDay);
-        dayToWorks.add(dayWork);
-
+        if(startDate.get(DAY_OF_WEEK) != 1 && startDate.get(DAY_OF_WEEK) != 7) {
+            int hourStartTask = startDate.get(HOUR_OF_DAY);
+            resetTime(startDate);
+            dayWork = new DayWork();
+            dayWork.setDate(startDate.getTime());
+            hoursSpendOnTaskInDay = ((16 - hourStartTask) * load);
+            dayWork.setWorks(hoursSpendOnTaskInDay); // 8 - hours in work day
+            setTotalDayWorks(totalDayWorks, startDate, hoursSpendOnTaskInDay);
+            dayToWorks.add(dayWork);
+        }
         startDate.add(Calendar.DATE, 1);
 
         // middle day (between start and and day)
         while (startDate.compareTo(maxDate) < 0 && (startDate.get(Calendar.YEAR) != maxDate.get(Calendar.YEAR) ||
                 startDate.get(MONTH) != maxDate.get(MONTH) ||
                 startDate.get(DAY_OF_MONTH) != maxDate.get(DAY_OF_MONTH))) {
-            dayWork = new DayWork();
-            resetTime(startDate);
-            dayWork.setDate(startDate.getTime());
+            if(startDate.get(DAY_OF_WEEK) != 1 && startDate.get(DAY_OF_WEEK) != 7) {
+                dayWork = new DayWork();
+                resetTime(startDate);
+                dayWork.setDate(startDate.getTime());
 
-            if(startDate.compareTo(completionDate) > 0) {
-                dayWork.setDelay(true);
+                if (startDate.compareTo(completionDate) > 0) {
+                    dayWork.setDelay(true);
+                }
+
+                hoursSpendOnTaskInDay = (8 * load); // 8 - hours in work day
+                dayWork.setWorks(hoursSpendOnTaskInDay);
+
+                setTotalDayWorks(totalDayWorks, startDate, hoursSpendOnTaskInDay);
+
+                dayToWorks.add(dayWork);
             }
-
-            hoursSpendOnTaskInDay = (8 * load); // 8 - hours in work day
-            dayWork.setWorks(hoursSpendOnTaskInDay);
-
-            setTotalDayWorks(totalDayWorks, startDate, hoursSpendOnTaskInDay);
-
-            dayToWorks.add(dayWork);
             startDate.add(Calendar.DATE, 1);
         }
         // startDay and completionDate the same day
         int hourCompletionTask = completionDate.get(HOUR_OF_DAY);
-        if (hourCompletionTask > 8) {
+        if (hourCompletionTask > 8 && startDate.get(DAY_OF_WEEK) != 1 && startDate.get(DAY_OF_WEEK) != 7) {
             dayWork = new DayWork();
             resetTime(startDate);
             dayWork.setDate(startDate.getTime());

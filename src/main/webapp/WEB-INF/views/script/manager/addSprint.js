@@ -10,9 +10,14 @@ function setSprints(idProject) {
         success: function (data) {
             var sprints = document.getElementById('preliminarySprints');
             sprints.innerHTML = '';
+            var option = document.createElement('option');
+            option.value = '';
+            option.innerHTML = "Have no preliminary sprints";
+            sprints.appendChild(option);
+
             for (var i = 0; i < data.length; i++) {
                 sprintsCompletionDate[data[i].sprintId] = data[i].completionDate;
-                var option = document.createElement('option');
+                option = document.createElement('option');
                 option.setAttribute('value', data[i].sprintId);
                 option.innerHTML = data[i].name;
                 sprints.appendChild(option);
@@ -49,6 +54,12 @@ function validateSprintForm() {
         }
     }
 
+    if (validationInfo != "") {
+        error.removeAttribute('hidden');
+        error.innerHTML = validationInfo;
+        return false;
+    }
+
     var index = document.getElementById('preliminarySprints').value;
     var preliminarySprintsCompletionDate = new Date(sprintsCompletionDate[index]);
 
@@ -60,6 +71,10 @@ function validateSprintForm() {
 
     if (sprintStartDate < preliminarySprintsCompletionDate) {
         validationInfo = validationInfo + "sprint start date < preliminary sprints completion date<br>";
+    }
+
+    if(sprintStartDate.getDay() === 6 || startDate.getDay() === 0) {
+        validationInfo = validationInfo + "Error you cannot select a weekend<br>";
     }
 
     if (projectStartDate > sprintStartDate) {

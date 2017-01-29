@@ -10,7 +10,6 @@ weekday[4] = "Thu";
 weekday[5] = "Fri";
 weekday[6] = "Sat";
 
-var selected;
 
 function onChangeFilter() {
     var idPr;
@@ -193,17 +192,21 @@ function createEmployeeNameRow(tbodyName, tbodyHours, employee, startDate, compl
         var td2 = document.createElement('td');
         td2.setAttribute('style', 'word-wrap: break-word;');
         td2.innerHTML = "_";
-        for (var j = 0; j < employee.totalDayWorks.length; j++) {
-            var date2 = new Date(employee.totalDayWorks[j].date);
-            date2.setHours(0, 0, 0, 0);
-            if (date.valueOf() == date2.valueOf()) {
-                var works = employee.totalDayWorks[j].works;
-                if (works > 8) {
-                    td2.setAttribute('class', 'danger');
-                    td2.setAttribute('title', 'Overtime');
+        if(date.getDay() == 6 || date.getDay() == 0) {
+            td2.setAttribute('style', 'background-color: grey');
+        } else {
+            for (var j = 0; j < employee.totalDayWorks.length; j++) {
+                var date2 = new Date(employee.totalDayWorks[j].date);
+                date2.setHours(0, 0, 0, 0);
+                if (date.valueOf() == date2.valueOf()) {
+                    var works = employee.totalDayWorks[j].works;
+                    if (works > 8) {
+                        td2.setAttribute('class', 'danger');
+                        td2.setAttribute('title', 'Overtime');
+                    }
+                    td2.innerHTML = works + " h";
+                    break;
                 }
-                td2.innerHTML = works + " h";
-                break;
             }
         }
         tr2.appendChild(td2);
@@ -228,18 +231,22 @@ function createEmployeeProjectRow(tbodyName, tbodyHours, employee, startDate, co
         for (; date <= completionDate; date.setDate(date.getDate() + 1)) {
             var td2 = document.createElement('td');
             td2.innerHTML = "_";
-            for (var k = 0; employee.projectListItems[i].totalDayWorks != null &&
-            k < employee.projectListItems[i].totalDayWorks.length; k++) {
-                var date2 = new Date(employee.projectListItems[i].totalDayWorks[k].date);
-                date2.setHours(0, 0, 0, 0);
-                if (date.valueOf() == date2.valueOf()) {
-                    var works = employee.projectListItems[i].totalDayWorks[k].works;
-                    if (works > 8) {
-                        td2.setAttribute('class', 'danger');
-                        td2.setAttribute('title', 'Overtime');
+            if(date.getDay() == 6 || date.getDay() == 0) {
+                td2.setAttribute('style', 'background-color: grey');
+            } else {
+                for (var k = 0; employee.projectListItems[i].totalDayWorks != null &&
+                k < employee.projectListItems[i].totalDayWorks.length; k++) {
+                    var date2 = new Date(employee.projectListItems[i].totalDayWorks[k].date);
+                    date2.setHours(0, 0, 0, 0);
+                    if (date.valueOf() == date2.valueOf()) {
+                        var works = employee.projectListItems[i].totalDayWorks[k].works;
+                        if (works > 8) {
+                            td2.setAttribute('class', 'danger');
+                            td2.setAttribute('title', 'Overtime');
+                        }
+                        td2.innerHTML = works + " h";
+                        break;
                     }
-                    td2.innerHTML = works + " h";
-                    break;
                 }
             }
             tr2.appendChild(td2);
@@ -267,18 +274,22 @@ function createEmployeeSprintsRow(tbodyName, tbodyHours, sprintListItems, startD
         for (; date <= completionDate; date.setDate(date.getDate() + 1)) {
             var td2 = document.createElement('td');
             td2.innerHTML = "_";
-            for (var k = 0; sprintListItems[i].totalDayWorks != null &&
-            k < sprintListItems[i].totalDayWorks.length; k++) {
-                var date2 = new Date(sprintListItems[i].totalDayWorks[k].date);
-                date2.setHours(0, 0, 0, 0);
-                if (date.valueOf() == date2.valueOf()) {
-                    var works = sprintListItems[i].totalDayWorks[k].works;
-                    if (works > 8) {
-                        td2.setAttribute('class', 'danger');
-                        td2.setAttribute('title', 'Overtime');
+            if(date.getDay() == 6 || date.getDay() == 0) {
+                td2.setAttribute('style', 'background-color: grey');
+            } else {
+                for (var k = 0; sprintListItems[i].totalDayWorks != null &&
+                k < sprintListItems[i].totalDayWorks.length; k++) {
+                    var date2 = new Date(sprintListItems[i].totalDayWorks[k].date);
+                    date2.setHours(0, 0, 0, 0);
+                    if (date.valueOf() == date2.valueOf()) {
+                        var works = sprintListItems[i].totalDayWorks[k].works;
+                        if (works > 8) {
+                            td2.setAttribute('class', 'danger');
+                            td2.setAttribute('title', 'Overtime');
+                        }
+                        td2.innerHTML = works + " h";
+                        break;
                     }
-                    td2.innerHTML = works + " h";
-                    break;
                 }
             }
             tr2.appendChild(td2);
@@ -308,24 +319,29 @@ function createEmployeeTaskRow(tbodyName, tbodyHours, taskItems, startDate, comp
         for (; date <= completionDate; date.setDate(date.getDate() + 1)) {
             var td2 = document.createElement('td');
             td2.innerHTML = "_";
-            for (var k = 0; taskItems[i].dayWorks != null &&
-            k < taskItems[i].dayWorks.length; k++) {
-                var date2 = new Date(taskItems[i].dayWorks[k].date);
-                date2.setHours(0, 0, 0, 0);
-                if (date.valueOf() == date2.valueOf()) {
-                    var works = taskItems[i].dayWorks[k].works;
-                    if (works > 8) {
-                        td2.setAttribute('class', 'danger');
-                        td2.setAttribute('title', 'Overtime');
-                    }
-                    if (taskItems[i].dayWorks[k].isDelay == true) {
-                        td2.setAttribute('class', 'alert alert-warning');
-                        td2.setAttribute('title', 'Delaty');
-                    }
-                    td2.innerHTML = works + " h";
-                    break;
-                }
+            if(date.getDay() == 6 || date.getDay() == 0) {
+                td2.setAttribute('style', 'background-color: grey');
             }
+            //} else {
+                for (var k = 0; taskItems[i].dayWorks != null &&
+                k < taskItems[i].dayWorks.length; k++) {
+                    var date2 = new Date(taskItems[i].dayWorks[k].date);
+                    date2.setHours(0, 0, 0, 0);
+                    if (date.valueOf() == date2.valueOf()) {
+                        var works = taskItems[i].dayWorks[k].works;
+                        if (works > 8) {
+                            td2.setAttribute('class', 'danger');
+                            td2.setAttribute('title', 'Overtime');
+                        }
+                        if (taskItems[i].dayWorks[k].isDelay == true) {
+                            td2.setAttribute('class', 'alert alert-warning');
+                            td2.setAttribute('title', 'Delaty');
+                        }
+                        td2.innerHTML = works + " h";
+                        break;
+                    }
+                }
+            //}
             tr2.appendChild(td2);
         }
         tbodyHours.appendChild(tr2);

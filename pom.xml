@@ -186,9 +186,6 @@
                     <deployables>
                         <deployable>
                             <type>war</type>
-                            <properties>
-                                <context>${project.build.finalName}</context>
-                            </properties>
                         </deployable>
                     </deployables>
                 </configuration>

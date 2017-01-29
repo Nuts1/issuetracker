@@ -1,0 +1,90 @@
+<html lang="en">
+<head>
+    <title>Issue tracker</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<style>
+    .login-container {
+        position: relative;
+        top: 40%;
+        width: 100%;
+        margin-left: auto ;
+        margin-right: auto ;
+    }
+
+    @import url(http://fonts.googleapis.com/css?family=Roboto:400);
+    body {
+        background-color:#fff;
+        -webkit-font-smoothing: antialiased;
+        font: normal 14px Roboto,arial,sans-serif;
+    }
+
+    .container {
+        top: 20%;
+        margin-left: auto ;
+        margin-right: auto ;
+
+        position: relative;
+    }
+
+    .form-login {
+        background-color: #EDEDED;
+        padding-top: 10px;
+        padding-bottom: 20px;
+        padding-left: 20px;
+        padding-right: 20px;
+        border-radius: 15px;
+        border-color:#d2d2d2;
+        border-width: 5px;
+        box-shadow:0 1px 0 #cfcfcf;
+    }
+
+    h4 {
+        border:0 solid #fff;
+        border-bottom-width:1px;
+        padding-bottom:10px;
+        text-align: center;
+    }
+
+</style>
+<body>
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar" id="myNavbar">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-offset-5 col-md-3">
+            <div class="form-login">
+                <form action="/login" method="post">
+                    <div class="form-login">
+                        <h4>Welcome back.</h4>
+                        <input type="text" id="email" name="email"/>
+                        </br>
+                        <input type="password" id="password" name="password"/>
+                        </br>
+                        <div class="wrapper">
+                        <span class="group-btn">
+                            <button style="padding: 10px; margin: 10px;" type="submit" class="btn btn-primary btn-md">Log in</button>
+                        </span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
