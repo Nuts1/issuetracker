@@ -17,6 +17,55 @@ function selectProject(str) {
     });
 }
 
+function addRow(task, startDate, completionDate, dataTable, taskResources) {
+    if (task.previousTask != null) {
+        dataTable.addRow(['' + task.taskId,
+            'Task : ' + task.name,
+            taskResources,
+            new Date(startDate),
+            new Date(completionDate),
+            null,
+            0,
+            '' + task.previousTask.taskId]);
+    } else {
+        dataTable.addRow(['' + task.taskId,
+            'Task : ' + task.name,
+            taskResources,
+            new Date(startDate),
+            new Date(completionDate),
+            null,
+            0,
+            null]);
+    }
+}
+function showChart(dataTableActualTime, dataTableBaseTime) {
+    if (dataTableActualTime.getNumberOfRows() > 0) {
+        var ActualTimeDiv = document.getElementById('diagram');
+        var chart = new google.visualization.Gantt(ActualTimeDiv);
+        chart.draw(dataTableActualTime);
+    }
+
+    if (dataTableBaseTime.getNumberOfRows() > 0) {
+        var BaseTimeDiv = document.getElementById('diagramBase');
+        var chart = new google.visualization.Gantt(BaseTimeDiv);
+        chart.draw(dataTableBaseTime);
+    }
+}
+function successCompleteTask(tr) {
+    tr.setAttribute('class', 'alert alert-success');
+    tr.setAttribute('title', 'Task completed on time');
+    tr.setAttribute('data-toggle', 'tooltip');
+}
+function delayCompleteTask(tr) {
+    tr.setAttribute('class', 'alert alert-danger');
+    tr.setAttribute('title', 'Task completed with a delay');
+    tr.setAttribute('data-toggle', 'tooltip');
+}
+function deleyStartTask(tr) {
+    tr.setAttribute('class', 'alert alert-danger');
+    tr.setAttribute('title', 'task started with a delay');
+    tr.setAttribute('data-toggle', 'tooltip');
+}
 function tableCreate(project) {
     var projectName = document.getElementById('projectName');
     var projectInfo = document.getElementById('projectInfo');
@@ -123,126 +172,29 @@ function tableCreate(project) {
             tdPredicatedDelay.innerHTML = task.predictedDelay;
 
             if (task.actualStartDate != null && task.actualCompletionDate != null) {
-                if (task.previousTask != null) {
-                    dataTableActualTime.addRow(['' + task.taskId,
-                        'Task : ' + task.name,
-                        taskResources,
-                        new Date(task.actualStartDate),
-                        new Date(task.actualCompletionDate),
-                        null,
-                        0,
-                        '' + task.previousTask.taskId]);
-                } else {
-                    dataTableActualTime.addRow(['' + task.taskId,
-                        'Task : ' + task.name,
-                        taskResources,
-                        new Date(task.actualStartDate),
-                        new Date(task.actualCompletionDate),
-                        null,
-                        0,
-                        null]);
-                }
-            } else if (task.actualStartDate != null) {
-                if (task.previousTask != null) {
-                    dataTableActualTime.addRow(['' + task.taskId,
-                        'Task : ' + task.name,
-                        taskResources,
-                        new Date(task.actualStartDate),
-                        new Date(task.completionDate),
-                        null,
-                        0,
-                        '' + task.previousTask.taskId]);
-                } else {
-                    dataTableActualTime.addRow(['' + task.taskId,
-                        'Task : ' + task.name,
-                        taskResources,
-                        new Date(task.actualStartDate),
-                        new Date(task.completionDate),
-                        null,
-                        0,
-                        null]);
-                }
-            } else if (task.actualCompletionDate != null) {
-                if (task.previousTask != null) {
-                    dataTableActualTime.addRow(['' + task.taskId,
-                        'Task : ' + task.name,
-                        taskResources,
-                        new Date(task.startDate),
-                        new Date(task.actualCompletionDate),
-                        null,
-                        100,
-                        '' + task.previousTask.taskId]);
-                } else {
-                    dataTableActualTime.addRow(['' + task.taskId,
-                        'Task : ' + task.name,
-                        taskResources,
-                        new Date(task.startDate),
-                        new Date(task.actualCompletionDate),
-                        null,
-                        100,
-                        null]);
-                }
+                addRow(task, task.actualStartDate, task.actualCompletionDate, dataTableActualTime, taskResources);
+            } else if (task, task.actualStartDate != null) {
+                addRow(task, task.actualStartDate, task.completionDate, dataTableActualTime, taskResources);
+            } else if (task, task.actualCompletionDate != null) {
+                addRow(task, task.startDate, task.actualCompletionDate, dataTableActualTime, taskResources);
             } else {
-                if (task.previousTask != null) {
-                    dataTableActualTime.addRow(['' + task.taskId,
-                        'Task : ' + task.name,
-                        taskResources,
-                        new Date(task.startDate),
-                        new Date(task.completionDate),
-                        null,
-                        0,
-                        '' + task.previousTask.taskId]);
-                } else {
-                    dataTableActualTime.addRow(['' + task.taskId,
-                        'Task : ' + task.name,
-                        taskResources,
-                        new Date(task.startDate),
-                        new Date(task.completionDate),
-                        null,
-                        0,
-                        null]);
-                }
+                addRow(task, task.startDate, task.completionDate, dataTableActualTime, taskResources);
             }
 
-
-            if (task.previousTask != null) {
-                dataTableBaseTime.addRow(['' + task.taskId,
-                    'Task : ' + task.name,
-                    taskResources,
-                    new Date(task.startDate),
-                    new Date(task.completionDate),
-                    null,
-                    0,
-                    '' + task.previousTask.taskId]);
-            } else {
-                dataTableBaseTime.addRow(['' + task.taskId,
-                    'Task : ' + task.name,
-                    taskResources,
-                    new Date(task.startDate),
-                    new Date(task.completionDate),
-                    null,
-                    0,
-                    null]);
-            }
+            addRow(task, task.startDate, task.completionDate, dataTableBaseTime, taskResources);
 
             if (task.actualStartDate != null) {
                 if (new Date(task.actualStartDate) > new Date(task.startDate)) {
-                    tr.setAttribute('class', 'alert alert-danger');
-                    tr.setAttribute('title', 'task started with a delay');
-                    tr.setAttribute('data-toggle', 'tooltip');
+                    deleyStartTask(tr);
                 }
                 tdActualStartTime.innerHTML = task.actualStartDate;
             }
 
             if (task.actualCompletionDate != null) {
                 if (new Date(task.actualCompletionDate) > new Date(task.completionDate)) {
-                    tr.setAttribute('class', 'alert alert-danger');
-                    tr.setAttribute('title', 'Task completed with a delay');
-                    tr.setAttribute('data-toggle', 'tooltip');
+                    delayCompleteTask(tr);
                 } else {
-                    tr.setAttribute('class', 'alert alert-success');
-                    tr.setAttribute('title', 'Task completed on time');
-                    tr.setAttribute('data-toggle', 'tooltip');
+                    successCompleteTask(tr);
                 }
                 tdActualCompletionTime.innerHTML = task.actualCompletionDate;
             } else {
@@ -278,17 +230,7 @@ function tableCreate(project) {
         }
         table.appendChild(tableBody);
     }
-    if(dataTableActualTime.getNumberOfRows() > 0) {
-        var ActualTimeDiv = document.getElementById('diagram');
-        var chart = new google.visualization.Gantt(ActualTimeDiv);
-        chart.draw(dataTableActualTime);
-    }
-
-    if(dataTableBaseTime.getNumberOfRows() > 0) {
-        var BaseTimeDiv = document.getElementById('diagramBase');
-        var chart = new google.visualization.Gantt(BaseTimeDiv);
-        chart.draw(dataTableBaseTime);
-    }
+    showChart(dataTableActualTime, dataTableBaseTime);
 
     $('[data-toggle="tooltip"]').tooltip();
 }

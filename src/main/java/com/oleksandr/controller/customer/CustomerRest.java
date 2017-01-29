@@ -1,12 +1,12 @@
 package com.oleksandr.controller.customer;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.oleksandr.dao.ProjectDao;
 import com.oleksandr.dto.SprintDto;
 import com.oleksandr.entity.Employee;
 import com.oleksandr.entity.Project;
 import com.oleksandr.entity.Sprint;
 import com.oleksandr.entity.json.Views;
+import com.oleksandr.service.entity.EmployeeService;
 import com.oleksandr.service.entity.ProjectService;
 import com.oleksandr.service.entity.impl.SprintServiceImpl;
 import com.oleksandr.service.reports.ResourceListServiceImpl;
@@ -18,7 +18,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by nuts on 26.01.17.
@@ -32,15 +31,16 @@ public class CustomerRest {
     private final ProjectService projectService;
     private final SprintServiceImpl sprintService;
     private final ResourceListServiceImpl resourceListService;
-
+    private final EmployeeService employeeService;
 
     @Autowired
     public CustomerRest(ProjectService projectService,
                         SprintServiceImpl sprintService,
-                        ResourceListServiceImpl resourceListService) {
+                        ResourceListServiceImpl resourceListService, EmployeeService employeeService) {
         this.projectService = projectService;
         this.sprintService = sprintService;
         this.resourceListService = resourceListService;
+        this.employeeService = employeeService;
     }
 
     @JsonView(Views.Summary.class)
@@ -143,4 +143,28 @@ public class CustomerRest {
             return null;
         }
     }
+
+    @JsonView(Views.Summary.class)
+    @RequestMapping(value = "/customer/projectStatisticDashboard")
+    public Statistic getProjectStatisticDashboard(@RequestParam String idProject) {
+        try {
+            long idPr = Long.parseLong(idProject);
+            Statistic statistic = projectService.getStatisticTask(idPr);
+            return statistic;
+        } catch (NumberFormatException ignore) {
+            return null;
+        }
+    }
+
+    @JsonView(Views.EmployeeIdNameSurname.class)
+    @RequestMapping(value = "/customer/employees")
+    public List<Employee> getEmployees(@RequestParam String idProject) {
+        try {
+            long idPr = Long.parseLong(idProject);
+            return employeeService.getByProjectId(idPr);
+        } catch (NumberFormatException ignore) {
+            return employeeService.getAll();
+        }
+    }
+
 }

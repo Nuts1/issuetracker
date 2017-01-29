@@ -1,6 +1,3 @@
-/**
- * Created by nuts on 26.01.17.
- */
 var monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
 ];
@@ -13,7 +10,6 @@ weekday[4] = "Thu";
 weekday[5] = "Fri";
 weekday[6] = "Sat";
 
-var selected;
 
 function onChangeFilter() {
     var idPr;
@@ -79,7 +75,8 @@ function writeResourceTable(data) {
 
     var divTableName = document.createElement('div');
     divTableName.setAttribute('class', "col-sm-6");
-    divTableName.setAttribute('style', "width: 300px;");
+    divTableName.setAttribute('style', "overflow-y:scroll; max-width: 300px;");
+
 
     var divTableHours = document.createElement('div');
     divTableHours.setAttribute('class', "col-sm-8");
@@ -183,6 +180,7 @@ function createEmployeeNameRow(tbodyName, tbodyHours, employee, startDate, compl
     var td = document.createElement('td');
     tr.setAttribute('class', 'success');
     td.innerHTML = employee.name + ". Works: " + employee.totalWorks + " hours";
+    td.setAttribute('style', 'word-wrap: break-word;');
     tr.appendChild(td);
     tbodyName.appendChild(tr);
 
@@ -192,18 +190,23 @@ function createEmployeeNameRow(tbodyName, tbodyHours, employee, startDate, compl
     tr2.setAttribute('class', 'success');
     for (; date <= completionDate; date.setDate(date.getDate() + 1)) {
         var td2 = document.createElement('td');
+        td2.setAttribute('style', 'word-wrap: break-word;');
         td2.innerHTML = "_";
-        for (var j = 0; j < employee.totalDayWorks.length; j++) {
-            var date2 = new Date(employee.totalDayWorks[j].date);
-            date2.setHours(0, 0, 0, 0);
-            if (date.valueOf() == date2.valueOf()) {
-                var works = employee.totalDayWorks[j].works;
-                if (works > 8) {
-                    td2.setAttribute('class', 'danger');
-                    td2.setAttribute('title', 'Overtime');
+        if(date.getDay() == 6 || date.getDay() == 0) {
+            td2.setAttribute('style', 'background-color: grey');
+        } else {
+            for (var j = 0; j < employee.totalDayWorks.length; j++) {
+                var date2 = new Date(employee.totalDayWorks[j].date);
+                date2.setHours(0, 0, 0, 0);
+                if (date.valueOf() == date2.valueOf()) {
+                    var works = employee.totalDayWorks[j].works;
+                    if (works > 8) {
+                        td2.setAttribute('class', 'danger');
+                        td2.setAttribute('title', 'Overtime');
+                    }
+                    td2.innerHTML = works + " h";
+                    break;
                 }
-                td2.innerHTML = works + " h";
-                break;
             }
         }
         tr2.appendChild(td2);
@@ -228,18 +231,22 @@ function createEmployeeProjectRow(tbodyName, tbodyHours, employee, startDate, co
         for (; date <= completionDate; date.setDate(date.getDate() + 1)) {
             var td2 = document.createElement('td');
             td2.innerHTML = "_";
-            for (var k = 0; employee.projectListItems[i].totalDayWorks != null &&
-            k < employee.projectListItems[i].totalDayWorks.length; k++) {
-                var date2 = new Date(employee.projectListItems[i].totalDayWorks[k].date);
-                date2.setHours(0, 0, 0, 0);
-                if (date.valueOf() == date2.valueOf()) {
-                    var works = employee.projectListItems[i].totalDayWorks[k].works;
-                    if (works > 8) {
-                        td2.setAttribute('class', 'danger');
-                        td2.setAttribute('title', 'Overtime');
+            if(date.getDay() == 6 || date.getDay() == 0) {
+                td2.setAttribute('style', 'background-color: grey');
+            } else {
+                for (var k = 0; employee.projectListItems[i].totalDayWorks != null &&
+                k < employee.projectListItems[i].totalDayWorks.length; k++) {
+                    var date2 = new Date(employee.projectListItems[i].totalDayWorks[k].date);
+                    date2.setHours(0, 0, 0, 0);
+                    if (date.valueOf() == date2.valueOf()) {
+                        var works = employee.projectListItems[i].totalDayWorks[k].works;
+                        if (works > 8) {
+                            td2.setAttribute('class', 'danger');
+                            td2.setAttribute('title', 'Overtime');
+                        }
+                        td2.innerHTML = works + " h";
+                        break;
                     }
-                    td2.innerHTML = works + " h";
-                    break;
                 }
             }
             tr2.appendChild(td2);
@@ -255,6 +262,7 @@ function createEmployeeSprintsRow(tbodyName, tbodyHours, sprintListItems, startD
         tr.setAttribute('style', 'background: #d7dce0;');
         var td = document.createElement('td');
         td.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sprint: " + sprintListItems[i].name;
+        td.setAttribute('style', 'word-wrap: break-word;');
         tr.appendChild(td);
         tbodyName.appendChild(tr);
 
@@ -266,18 +274,22 @@ function createEmployeeSprintsRow(tbodyName, tbodyHours, sprintListItems, startD
         for (; date <= completionDate; date.setDate(date.getDate() + 1)) {
             var td2 = document.createElement('td');
             td2.innerHTML = "_";
-            for (var k = 0; sprintListItems[i].totalDayWorks != null &&
-            k < sprintListItems[i].totalDayWorks.length; k++) {
-                var date2 = new Date(sprintListItems[i].totalDayWorks[k].date);
-                date2.setHours(0, 0, 0, 0);
-                if (date.valueOf() == date2.valueOf()) {
-                    var works = sprintListItems[i].totalDayWorks[k].works;
-                    if (works > 8) {
-                        td2.setAttribute('class', 'danger');
-                        td2.setAttribute('title', 'Overtime');
+            if(date.getDay() == 6 || date.getDay() == 0) {
+                td2.setAttribute('style', 'background-color: grey');
+            } else {
+                for (var k = 0; sprintListItems[i].totalDayWorks != null &&
+                k < sprintListItems[i].totalDayWorks.length; k++) {
+                    var date2 = new Date(sprintListItems[i].totalDayWorks[k].date);
+                    date2.setHours(0, 0, 0, 0);
+                    if (date.valueOf() == date2.valueOf()) {
+                        var works = sprintListItems[i].totalDayWorks[k].works;
+                        if (works > 8) {
+                            td2.setAttribute('class', 'danger');
+                            td2.setAttribute('title', 'Overtime');
+                        }
+                        td2.innerHTML = works + " h";
+                        break;
                     }
-                    td2.innerHTML = works + " h";
-                    break;
                 }
             }
             tr2.appendChild(td2);
@@ -295,7 +307,9 @@ function createEmployeeTaskRow(tbodyName, tbodyHours, taskItems, startDate, comp
         td.innerHTML = tabs
             + taskItems[i].name
             + " Units: " + taskItems[i].load + "%";
+        td.setAttribute('style', 'white-space:nowrap;');
         tr.appendChild(td);
+
         tbodyName.appendChild(tr);
 
         var date = new Date(startDate);
@@ -305,6 +319,10 @@ function createEmployeeTaskRow(tbodyName, tbodyHours, taskItems, startDate, comp
         for (; date <= completionDate; date.setDate(date.getDate() + 1)) {
             var td2 = document.createElement('td');
             td2.innerHTML = "_";
+            if(date.getDay() == 6 || date.getDay() == 0) {
+                td2.setAttribute('style', 'background-color: grey');
+            }
+            //} else {
             for (var k = 0; taskItems[i].dayWorks != null &&
             k < taskItems[i].dayWorks.length; k++) {
                 var date2 = new Date(taskItems[i].dayWorks[k].date);
@@ -323,6 +341,7 @@ function createEmployeeTaskRow(tbodyName, tbodyHours, taskItems, startDate, comp
                     break;
                 }
             }
+            //}
             tr2.appendChild(td2);
         }
         tbodyHours.appendChild(tr2);
@@ -351,6 +370,18 @@ function onChangeInterval() {
     writeResourceTable(resourceListData);
 }
 
+function getParameterByName(name, url) {
+    if (!url) {
+        url = window.location.href;
+    }
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
 
 function updateResourceList() {
     var projectId = getParameterByName('idProject');
@@ -376,6 +407,19 @@ function updateResourceList() {
         }
     });
 }
+
+function getParameterByName(name, url) {
+    if (!url) {
+        url = window.location.href;
+    }
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
 
 function projectsWrite(data) {
     if (data != null) {
@@ -490,16 +534,46 @@ function writeStatisticTable(data) {
         tdName.innerHTML = name;
         tdValue.innerHTML = value;
 
-
         tr.appendChild(tdName);
         tr.appendChild(tdValue);
         tableBody.appendChild(tr);
     }
     table.appendChild(tableBody);
-
-
-    var tbodyName = document.createElement('tbody');
     content.appendChild(table);
+}
+
+google.charts.load('current', {'packages': ['bar']});
+
+function writeStatisticDashboard(datePoint) {
+    var content = document.getElementById('content');
+    var dashboard = document.createElement('div');
+    dashboard.setAttribute('id', 'chart_div');
+    content.appendChild(dashboard);
+
+    var obj = datePoint.statistic;
+    var data = new google.visualization.DataTable();
+
+    data.addColumn('string', 'Name');
+    data.addColumn('string', 'Count');
+    for (var key in obj) {
+        var name = key;
+        var value = obj[key];
+
+        data.addRow([name, value]);
+    }
+
+    var options = {
+        title: 'Statistic',
+        width: 900,
+        height: 400,
+        legend: {position: 'none'},
+        bar: {groupWidth: "90%"}
+    };
+
+    var chart = new google.charts.Bar(document.getElementById('chart_div'));
+    // Convert the Classic options to Material options.
+    chart.draw(data, google.charts.Bar.convertOptions(options));
+
 }
 
 function updateProjectStatistic() {
@@ -516,6 +590,24 @@ function updateProjectStatistic() {
                 alert("Error");
             } else {
                 writeStatisticTable(data);
+            }
+        },
+        error: function (e) {
+            console.log("ERROR: ", e);
+        }
+    });
+
+    $.ajax({
+        type: "GET",
+        contentType: "application/json",
+        url: "/customer/projectStatisticDashboard?idProject=" + idPr,
+        timeout: 100000,
+        async: false,
+        success: function (data) {
+            if (data == null) {
+                alert("Error");
+            } else {
+                google.charts.setOnLoadCallback(writeStatisticDashboard(data));
             }
         },
         error: function (e) {
@@ -557,18 +649,24 @@ function updateSprintStatistic() {
             console.log("ERROR: ", e);
         }
     });
-}
 
-function getParameterByName(name, url) {
-    if (!url) {
-        url = window.location.href;
-    }
-    name = name.replace(/[\[\]]/g, "\\$&");
-    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-        results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, " "));
+    $.ajax({
+        type: "GET",
+        contentType: "application/json",
+        url: "/customer/sprintStatisticDashboard?idSprint=" + idSpr,
+        timeout: 100000,
+        async: false,
+        success: function (data) {
+            if (data == null) {
+                alert("Error");
+            } else {
+                google.charts.setOnLoadCallback(writeStatisticDashboard(data));
+            }
+        },
+        error: function (e) {
+            console.log("ERROR: ", e);
+        }
+    });
 }
 
 function getSprints() {

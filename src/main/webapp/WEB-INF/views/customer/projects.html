@@ -8,6 +8,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="../resource/projects.css">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        google.charts.load('current', {'packages':['gantt']});
+    </script>
 </head>
 <body>
 
@@ -39,6 +43,14 @@
             </div>
             <h1>Sprints</h1>
             <div id="sprints">
+
+            </div>
+            <h2>Gantt. Actual time</h2>
+            <div id="diagram"  class="row" style="min-width: 90%; min-height: 500px">
+
+            </div>
+            <h2>Gantt. Base time</h2>
+            <div id="diagramBase"  class="row" style="min-width: 90%; min-height: 500px">
 
             </div>
         </div>
