@@ -17,5 +17,5 @@ password: 11111
 
 
 run local:
-
- mvn tomcat7:run
+1) Create database (database.sql)
+2) mvn tomcat7:run
