@@ -7,7 +7,9 @@
     <mvc:annotation-driven/>
     <context:component-scan base-package="com.oleksandr.*"/>
 
-    <!--<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+
+    <!--
+    <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
         <property name="jndiName" value="java:comp/env/jdbc/IssueTracker"/>
         <property name="lookupOnStartup" value="true"/>
         <property name="proxyInterface" value="javax.sql.DataSource"/>
@@ -22,7 +24,7 @@
         <property name="lookupOnStartup" value="true"/>
         <property name="proxyInterface" value="javax.sql.DataSource"/>
     </bean>
-
+        -->
 
     <bean class="java.net.URI" id="dbUrl">
         <constructor-arg value="#{systemEnvironment['DATABASE_URL']}"/>
@@ -34,14 +36,14 @@
         <property name="username" value="#{ @dbUrl.getUserInfo().split(':')[0] }"/>
         <property name="password" value="#{ @dbUrl.getUserInfo().split(':')[1] }"/>
     </bean>
-    -->
 
-    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <!--<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.postgresql.Driver"/>
         <property name="url" value="jdbc:postgresql://localhost:5432/postgres"/>
         <property name="username" value="postgres"/>
         <property name="password" value="1928"/>
     </bean>
+    -->
 
     <bean id="messageSource"
           class="org.springframework.context.support.ResourceBundleMessageSource">
