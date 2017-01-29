@@ -18,4 +18,5 @@ password: 11111
 
 run local:
 1) Create database (database.sql)
+2) Configure dataSourse in applicationContext.xml
 2) mvn tomcat7:run
