@@ -11,6 +11,7 @@ import com.oleksandr.entity.json.Views;
 import com.oleksandr.service.entity.impl.ProjectServiceImpl;
 import com.oleksandr.service.reports.ResourceListServiceImpl;
 import com.oleksandr.service.entity.impl.SprintServiceImpl;
+import com.oleksandr.service.util.ErrorUtil;
 import com.oleksandr.validator.TaskValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -36,7 +37,7 @@ import java.util.stream.Collectors;
 public class ManagerTaskRest {
     private final TaskService taskService;
     private final TaskValidator taskValidator;
-    private final MessageSource messageSource;
+    private final ErrorUtil errorUtil;
 
 
     @Autowired
@@ -44,10 +45,10 @@ public class ManagerTaskRest {
                            TaskService taskService,
                            TaskValidator taskValidator,
                            EmployeeService employeeService,
-                           MessageSource messageSource) {
+                           ErrorUtil errorUtil) {
         this.taskService = taskService;
         this.taskValidator = taskValidator;
-        this.messageSource = messageSource;
+        this.errorUtil = errorUtil;
     }
 
     @JsonView(Views.Summary.class)
@@ -77,10 +78,12 @@ public class ManagerTaskRest {
             taskService.save(task);
         }
 
-        return bindingResult.getAllErrors()
-                .stream()
-                .map(e -> messageSource.getMessage(e, LocaleContextHolder.getLocale()))
-                .collect(Collectors.toList());
+        List<String> result = errorUtil.getErrors(bindingResult);
+
+        if(result.size() == 0)
+            result.add("Success added");
+
+        return result;
     }
 
     @RequestMapping(value = "/manager/edit", method = RequestMethod.POST)
@@ -90,10 +93,12 @@ public class ManagerTaskRest {
             taskService.update(task);
         }
 
-        return bindingResult.getAllErrors()
-                .stream()
-                .map(e -> messageSource.getMessage(e, LocaleContextHolder.getLocale()))
-                .collect(Collectors.toList());
+        List<String> result = errorUtil.getErrors(bindingResult);
+
+        if(result.size() == 0)
+            result.add("Success updated");
+
+        return result;
     }
 
     @JsonView(Views.Summary.class)

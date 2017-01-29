@@ -18,7 +18,7 @@ public interface TaskDao {
 
     boolean save(TaskDto taskWithResourcesDto);
 
-    void delete(long id);
+    int delete(long id);
 
     int update(TaskDto taskWithResourcesDto);
 

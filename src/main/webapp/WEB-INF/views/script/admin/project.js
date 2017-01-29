@@ -28,6 +28,7 @@ function getByRole(role) {
                 select = document.getElementById('selectCustomer');
             }
             if (select != null && data != null) {
+                select.innerHTML = '';
                 var option = document.createElement('option');
                 for (var i = 0; i < data.length; i++) {
                     option = document.createElement('option');
@@ -47,7 +48,7 @@ function getByRole(role) {
 }
 
 
-function deleteProject() {
+function deleteProjectFunction() {
     $.ajax({
         type: "POST",
         contentType: "application/json",
@@ -60,6 +61,7 @@ function deleteProject() {
                 error.innerHTML = data;
                 return false;
             }
+            getProjectsAdmin();
         },
         error: function (e) {
             console.log("ERROR: ", e);
@@ -81,9 +83,15 @@ function buttonAddNewProject() {
     document.getElementById('name').value = '';
     document.getElementById('startDate').valueAsDate = new Date();
     document.getElementById('projectName').innerHTML = "";
+
+    document.getElementById('updateProject').setAttribute('value', 'Add');
+    document.getElementById('deleteProject').disabled = true;
 }
 
 function selectProject(id) {
+    document.getElementById('updateProject').setAttribute('value', 'Update');
+    document.getElementById('deleteProject').disabled = false;
+
     $.ajax({
         type: "POST",
         contentType: "application/json",

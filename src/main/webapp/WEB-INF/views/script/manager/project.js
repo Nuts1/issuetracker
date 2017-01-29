@@ -31,27 +31,29 @@ function tableCreate(project) {
     var sprintIdSelect = document.getElementById('sprintId');
     sprintIdSelect.innerHTML = "<option selected disabled>Select Sprint</option>";
 
-    var dataTable = new google.visualization.DataTable();
+    var dataTableActualTime = new google.visualization.DataTable();
 
-    dataTable.addColumn('string', 'Task ID');
-    dataTable.addColumn('string', 'Task Name');
-    dataTable.addColumn('string', 'Resource');
-    dataTable.addColumn('date', 'Start Date');
-    dataTable.addColumn('date', 'End Date');
-    dataTable.addColumn('number', 'Duration');
-    dataTable.addColumn('number', 'Percent Complete');
-    dataTable.addColumn('string', 'Dependencies');
+    dataTableActualTime.addColumn('string', 'Task ID');
+    dataTableActualTime.addColumn('string', 'Task Name');
+    dataTableActualTime.addColumn('string', 'Resource');
+    dataTableActualTime.addColumn('date', 'Start Date');
+    dataTableActualTime.addColumn('date', 'End Date');
+    dataTableActualTime.addColumn('number', 'Duration');
+    dataTableActualTime.addColumn('number', 'Percent Complete');
+    dataTableActualTime.addColumn('string', 'Dependencies');
+
+    var dataTableBaseTime = new google.visualization.DataTable();
+
+    dataTableBaseTime.addColumn('string', 'Task ID');
+    dataTableBaseTime.addColumn('string', 'Task Name');
+    dataTableBaseTime.addColumn('string', 'Resource');
+    dataTableBaseTime.addColumn('date', 'Start Date');
+    dataTableBaseTime.addColumn('date', 'End Date');
+    dataTableBaseTime.addColumn('number', 'Duration');
+    dataTableBaseTime.addColumn('number', 'Percent Complete');
+    dataTableBaseTime.addColumn('string', 'Dependencies');
 
     for (var i = 0; i < project.sprints.length; i++) {
-        dataTable.addRow(['' + project.sprints[i].sprintId,
-            'Sprint : ' + project.sprints[i].name,
-            null,
-            new Date(project.sprints[i].startDate),
-            new Date(project.sprints[i].completionDate),
-            null,
-            0,
-            (project.sprints[i].previousSprint != null) ? ''+project.sprints[i].previousSprint : null]);
-
         var option = document.createElement('option');
         option.setAttribute('value', project.sprints[i].sprintId);
         option.innerHTML = project.sprints[i].name;
@@ -122,7 +124,7 @@ function tableCreate(project) {
 
             if (task.actualStartDate != null && task.actualCompletionDate != null) {
                 if (task.previousTask != null) {
-                    dataTable.addRow(['' + task.taskId,
+                    dataTableActualTime.addRow(['' + task.taskId,
                         'Task : ' + task.name,
                         taskResources,
                         new Date(task.actualStartDate),
@@ -131,7 +133,7 @@ function tableCreate(project) {
                         0,
                         '' + task.previousTask.taskId]);
                 } else {
-                    dataTable.addRow(['' + task.taskId,
+                    dataTableActualTime.addRow(['' + task.taskId,
                         'Task : ' + task.name,
                         taskResources,
                         new Date(task.actualStartDate),
@@ -142,7 +144,7 @@ function tableCreate(project) {
                 }
             } else if (task.actualStartDate != null) {
                 if (task.previousTask != null) {
-                    dataTable.addRow(['' + task.taskId,
+                    dataTableActualTime.addRow(['' + task.taskId,
                         'Task : ' + task.name,
                         taskResources,
                         new Date(task.actualStartDate),
@@ -151,7 +153,7 @@ function tableCreate(project) {
                         0,
                         '' + task.previousTask.taskId]);
                 } else {
-                    dataTable.addRow(['' + task.taskId,
+                    dataTableActualTime.addRow(['' + task.taskId,
                         'Task : ' + task.name,
                         taskResources,
                         new Date(task.actualStartDate),
@@ -162,7 +164,7 @@ function tableCreate(project) {
                 }
             } else if (task.actualCompletionDate != null) {
                 if (task.previousTask != null) {
-                    dataTable.addRow(['' + task.taskId,
+                    dataTableActualTime.addRow(['' + task.taskId,
                         'Task : ' + task.name,
                         taskResources,
                         new Date(task.startDate),
@@ -171,7 +173,7 @@ function tableCreate(project) {
                         100,
                         '' + task.previousTask.taskId]);
                 } else {
-                    dataTable.addRow(['' + task.taskId,
+                    dataTableActualTime.addRow(['' + task.taskId,
                         'Task : ' + task.name,
                         taskResources,
                         new Date(task.startDate),
@@ -182,7 +184,7 @@ function tableCreate(project) {
                 }
             } else {
                 if (task.previousTask != null) {
-                    dataTable.addRow(['' + task.taskId,
+                    dataTableActualTime.addRow(['' + task.taskId,
                         'Task : ' + task.name,
                         taskResources,
                         new Date(task.startDate),
@@ -191,7 +193,7 @@ function tableCreate(project) {
                         0,
                         '' + task.previousTask.taskId]);
                 } else {
-                    dataTable.addRow(['' + task.taskId,
+                    dataTableActualTime.addRow(['' + task.taskId,
                         'Task : ' + task.name,
                         taskResources,
                         new Date(task.startDate),
@@ -202,6 +204,26 @@ function tableCreate(project) {
                 }
             }
 
+
+            if (task.previousTask != null) {
+                dataTableBaseTime.addRow(['' + task.taskId,
+                    'Task : ' + task.name,
+                    taskResources,
+                    new Date(task.startDate),
+                    new Date(task.completionDate),
+                    null,
+                    0,
+                    '' + task.previousTask.taskId]);
+            } else {
+                dataTableBaseTime.addRow(['' + task.taskId,
+                    'Task : ' + task.name,
+                    taskResources,
+                    new Date(task.startDate),
+                    new Date(task.completionDate),
+                    null,
+                    0,
+                    null]);
+            }
 
             if (task.actualStartDate != null) {
                 if (new Date(task.actualStartDate) > new Date(task.startDate)) {
@@ -256,8 +278,17 @@ function tableCreate(project) {
         }
         table.appendChild(tableBody);
     }
-    var chart = new google.visualization.Gantt(document.getElementById('diagram'));
-    chart.draw(dataTable);
+    if(dataTableActualTime.getNumberOfRows() > 0) {
+        var ActualTimeDiv = document.getElementById('diagram');
+        var chart = new google.visualization.Gantt(ActualTimeDiv);
+        chart.draw(dataTableActualTime);
+    }
+
+    if(dataTableBaseTime.getNumberOfRows() > 0) {
+        var BaseTimeDiv = document.getElementById('diagramBase');
+        var chart = new google.visualization.Gantt(BaseTimeDiv);
+        chart.draw(dataTableBaseTime);
+    }
 
     $('[data-toggle="tooltip"]').tooltip();
 }

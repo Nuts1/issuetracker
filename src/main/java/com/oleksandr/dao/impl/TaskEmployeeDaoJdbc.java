@@ -328,7 +328,6 @@ public class TaskEmployeeDaoJdbc implements TaskEmployeeDao {
             taskEmployee.setTask(taskDao.getByIdWithoutEmployees(resultSet.getLong("task_id")));
             taskEmployee.setProjectName(resultSet.getString("projectName"));
             taskEmployee.setSprintName(resultSet.getString("sprintName"));
-            System.out.println(taskEmployee);
         } catch (SQLException e) {
             e.printStackTrace();
         }

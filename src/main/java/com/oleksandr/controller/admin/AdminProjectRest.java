@@ -6,6 +6,7 @@ import com.oleksandr.entity.Employee;
 import com.oleksandr.entity.Project;
 import com.oleksandr.entity.json.Views;
 import com.oleksandr.service.entity.ProjectService;
+import com.oleksandr.service.util.ErrorUtil;
 import com.oleksandr.validator.ProjectValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -28,13 +29,13 @@ public class AdminProjectRest {
 
     private final ProjectValidator projectValidator;
 
-    private final MessageSource messageSource;
+    private final ErrorUtil errorUtil;
 
     @Autowired
-    public AdminProjectRest(ProjectService projectService, ProjectValidator projectValidator, MessageSource messageSource) {
+    public AdminProjectRest(ProjectService projectService, ProjectValidator projectValidator, ErrorUtil errorUtil) {
         this.projectService = projectService;
         this.projectValidator = projectValidator;
-        this.messageSource = messageSource;
+        this.errorUtil = errorUtil;
     }
 
     @JsonView(Views.Summary.class)
@@ -44,10 +45,11 @@ public class AdminProjectRest {
         if(!bindingResult.hasErrors()) {
             projectService.save(projectDto);
         }
-        return bindingResult.getAllErrors()
-                .stream()
-                .map(e -> messageSource.getMessage(e, LocaleContextHolder.getLocale()))
-                .collect(Collectors.toList());
+        List<String> result = errorUtil.getErrors(bindingResult);
+
+        if(result.size() == 0)
+            result.add("Success added");
+        return result;
     }
 
 
@@ -58,15 +60,21 @@ public class AdminProjectRest {
         if(!bindingResult.hasErrors()) {
             projectService.update(projectDto);
         }
-        return bindingResult.getAllErrors()
-                .stream()
-                .map(e -> messageSource.getMessage(e, LocaleContextHolder.getLocale()))
-                .collect(Collectors.toList());
+        List<String> result = errorUtil.getErrors(bindingResult);
+
+        if(result.size() == 0)
+            result.add("Success updated");
+        return result;
     }
 
     @RequestMapping(value = "/admin/deleteProject")
-    public void deleteProject(@RequestParam long projectId) {
-        projectService.delete(projectId);
+    public String deleteProject(@RequestParam long projectId) {
+        int rows = projectService.delete(projectId);
+        if (rows == 1) {
+            return "Success deleted";
+        } else {
+            return "Error. Updated rows = " + rows;
+        }
     }
 
 

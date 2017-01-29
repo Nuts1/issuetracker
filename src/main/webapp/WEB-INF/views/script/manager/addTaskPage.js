@@ -127,6 +127,12 @@ function setDepartments() {
 
 function updatePosition(data) {
     var developerPosition = document.getElementById('developerPosition');
+    developerPosition.innerHTML = '';
+    option = document.createElement('option');
+    option.innerHTML = 'No position selected';
+    option.setAttribute('id', null);
+    developerPosition.appendChild(option);
+
     for (var i = 0; i < data.length; i++) {
         var option = document.createElement('option');
         option.setAttribute('id', data[i].positionId);
@@ -137,8 +143,14 @@ function updatePosition(data) {
 
 function updateDepartment(data) {
     var departmentSelect = document.getElementById('selectDepartment');
+    departmentSelect.innerHTML = '';
+    var option = document.createElement('option');
+    option.innerHTML = 'No Department selected';
+    option.setAttribute('id', null);
+    departmentSelect.appendChild(option);
+
     for (var i = 0; i < data.length; i++) {
-        var option = document.createElement('option');
+        option = document.createElement('option');
         option.setAttribute('id', data[i].departmentId);
         option.innerHTML = data[i].name;
         departmentSelect.appendChild(option);
@@ -211,6 +223,7 @@ function setMinDate() {
 function updatePreliminaryTask(data) {
     var preliminaryTask = document.getElementById('preliminaryTask');
     if (typeof(data) !== "undefined" && data !== null) {
+        preliminaryTask.innerHTML = '';
         for (var i = 0; i < data.length; i++) {
             if (idCurrentTask != data[i].taskId) {
                 if(data[i].actualCompletionDate == null)
@@ -361,8 +374,6 @@ function sumbit() {
         formData = formData + "}";
 
         saveTask(formData);
-    } else {
-
     }
 }
 

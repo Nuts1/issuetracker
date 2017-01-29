@@ -174,7 +174,6 @@ public class EmployeeDaoJdbc implements EmployeeDao {
     @Override
     public int save(EmployeeDto employeeDto) {
         Connection connection = null;
-        System.out.println(employeeDto);
         try {
             connection = dataSource.getConnection();
             connection.setAutoCommit(false);
@@ -183,8 +182,16 @@ public class EmployeeDaoJdbc implements EmployeeDao {
             statement.setString(2, employeeDto.getSurname());
             statement.setString(3, employeeDto.getEmail());
             statement.setLong(4, Long.parseLong(employeeDto.getRoleId()));
-            statement.setLong(5, Long.parseLong(employeeDto.getPositionId()));
-            statement.setLong(6, Long.parseLong(employeeDto.getQualificationId()));
+            if(employeeDto.getPositionId() != null) {
+                statement.setLong(5, Long.parseLong(employeeDto.getPositionId()));
+            } else {
+                statement.setNull(5, Types.BIGINT);
+            }
+            if(employeeDto.getQualificationId() != null) {
+                statement.setLong(6, Long.parseLong(employeeDto.getQualificationId()));
+            } else {
+                statement.setNull(6, Types.BIGINT);
+            }
             int row = statement.executeUpdate();
             connection.commit();
             close(statement);
@@ -208,8 +215,16 @@ public class EmployeeDaoJdbc implements EmployeeDao {
             statement.setString(2, employeeDto.getSurname());
             statement.setString(3, employeeDto.getEmail());
             statement.setLong(4, Long.parseLong(employeeDto.getRoleId()));
-            statement.setLong(5, Long.parseLong(employeeDto.getPositionId()));
-            statement.setLong(6, Long.parseLong(employeeDto.getQualificationId()));
+            if(employeeDto.getPositionId() != null) {
+                statement.setLong(5, Long.parseLong(employeeDto.getPositionId()));
+            } else {
+                statement.setNull(5, Types.BIGINT);
+            }
+            if(employeeDto.getQualificationId() != null) {
+                statement.setLong(6, Long.parseLong(employeeDto.getQualificationId()));
+            } else {
+                statement.setNull(6, Types.BIGINT);
+            }
             statement.setLong(7, Long.parseLong(employeeDto.getId()));
             int row = statement.executeUpdate();
             connection.commit();

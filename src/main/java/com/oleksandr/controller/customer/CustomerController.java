@@ -31,7 +31,6 @@ public class CustomerController {
         //long employeeId = Long.parseLong(principal.getName()); // getName return employeeId; TODO
         long employeeId = 4;
         Employee employee = employeeService.getById(employeeId);
-        System.out.println(employee);
         model.addAttribute("employee", employee);
         return "redirect:/customer/projects.html";
     }

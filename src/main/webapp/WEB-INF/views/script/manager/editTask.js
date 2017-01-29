@@ -57,7 +57,7 @@ function addDevelopers() {
 
 function updateSelectedDevelopers() {
     var selectedDevelopers = document.getElementById('selectedDevelopers');
-    selectedDevelopers.innerHTML = "";
+    selectedDevelopers.innerHTML = '';
     for (var i = 0; i < developersName.length; i++) {
         var li = document.createElement('li');
         li.setAttribute('id', developersId[i]);
@@ -133,8 +133,16 @@ function setDepartments() {
 
 function updatePosition(data) {
     var developerPosition = document.getElementById('developerPosition');
+
+    var option = document.createElement('option');
+    option.innerHTML = 'No position selected';
+    option.setAttribute('id', null);
+
+    developerPosition.appendChild(option);
+
+
     for (var i = 0; i < data.length; i++) {
-        var option = document.createElement('option');
+        option = document.createElement('option');
         option.setAttribute('id', data[i].positionId);
         option.innerHTML = data[i].position;
         developerPosition.appendChild(option);
@@ -143,8 +151,9 @@ function updatePosition(data) {
 
 function updateDepartment(data) {
     var departmentSelect = document.getElementById('selectDepartment');
+    departmentSelect.innerHTML = '';
     var option = document.createElement('option');
-    option.innerHTML = 'No Department';
+    option.innerHTML = 'No department selected';
     option.setAttribute('id', null);
 
     departmentSelect.appendChild(option);
@@ -188,6 +197,7 @@ function setMinDate() {
 function updatePreliminaryTask(data) {
     var preliminaryTask = document.getElementById('preliminaryTask');
     if (typeof(data) !== "undefined" && data !== null) {
+        preliminaryTask.innerHTML = '';
         for (var i = 0; i < data.length; i++) {
             if (idCurrentTask != data[i].taskId) {
                 preliminaryTasks[data[i].taskId] = new Date(data[i].completionDate);

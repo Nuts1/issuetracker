@@ -76,7 +76,8 @@ function writeResourceTable(data) {
 
     var divTableName = document.createElement('div');
     divTableName.setAttribute('class', "col-sm-6");
-    divTableName.setAttribute('style', "width: 300px;");
+    divTableName.setAttribute('style', "overflow-y:scroll; max-width: 300px;");
+
 
     var divTableHours = document.createElement('div');
     divTableHours.setAttribute('class', "col-sm-8");
@@ -180,19 +181,21 @@ function createEmployeeNameRow(tbodyName, tbodyHours, employee, startDate, compl
     var td = document.createElement('td');
     tr.setAttribute('class', 'success');
     td.innerHTML = employee.name + ". Works: " + employee.totalWorks + " hours";
+    td.setAttribute('style', 'word-wrap: break-word;');
     tr.appendChild(td);
     tbodyName.appendChild(tr);
 
     var date = new Date(startDate);
-    date.setHours(0, 0, 0, 0)
+    date.setHours(0, 0, 0, 0);
     var tr2 = document.createElement('tr');
     tr2.setAttribute('class', 'success');
     for (; date <= completionDate; date.setDate(date.getDate() + 1)) {
         var td2 = document.createElement('td');
+        td2.setAttribute('style', 'word-wrap: break-word;');
         td2.innerHTML = "_";
         for (var j = 0; j < employee.totalDayWorks.length; j++) {
             var date2 = new Date(employee.totalDayWorks[j].date);
-            date2.setHours(0, 0, 0, 0)
+            date2.setHours(0, 0, 0, 0);
             if (date.valueOf() == date2.valueOf()) {
                 var works = employee.totalDayWorks[j].works;
                 if (works > 8) {
@@ -252,6 +255,7 @@ function createEmployeeSprintsRow(tbodyName, tbodyHours, sprintListItems, startD
         tr.setAttribute('style', 'background: #d7dce0;');
         var td = document.createElement('td');
         td.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sprint: " + sprintListItems[i].name;
+        td.setAttribute('style', 'word-wrap: break-word;');
         tr.appendChild(td);
         tbodyName.appendChild(tr);
 
@@ -292,7 +296,9 @@ function createEmployeeTaskRow(tbodyName, tbodyHours, taskItems, startDate, comp
         td.innerHTML = tabs
             + taskItems[i].name
             + " Units: " + taskItems[i].load + "%";
+        td.setAttribute('style', 'white-space:nowrap;');
         tr.appendChild(td);
+
         tbodyName.appendChild(tr);
 
         var date = new Date(startDate);
@@ -486,7 +492,6 @@ function writeStatisticTable(data) {
         var tdValue = document.createElement('td');
         tdName.innerHTML = name;
         tdValue.innerHTML = value;
-
 
         tr.appendChild(tdName);
         tr.appendChild(tdValue);

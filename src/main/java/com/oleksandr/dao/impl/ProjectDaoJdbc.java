@@ -377,7 +377,6 @@ public class ProjectDaoJdbc implements ProjectDao {
 
     @Override
     public List<Project> getAllNameAndIdByCustomerId(long employeeId) {
-        System.out.println(employeeId);
         Connection connection = null;
         ResultSet resultSet = null;
         try {
@@ -464,9 +463,11 @@ public class ProjectDaoJdbc implements ProjectDao {
         Connection connection = null;
         try {
             connection = dataSource.getConnection();
+            connection.setAutoCommit(false);
             PreparedStatement statement = connection.prepareStatement(DELETE_BY_ID);
             statement.setLong(1, id);
             int rows = statement.executeUpdate();
+            connection.commit();
             close(statement);
             return rows;
         } catch (SQLException e) {

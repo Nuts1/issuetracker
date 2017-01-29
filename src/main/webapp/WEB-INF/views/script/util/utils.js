@@ -16,7 +16,6 @@ function projectsWrite(data) {
         var li = document.createElement('li');
         li.setAttribute('class', 'list-group-item');
         li.innerHTML = '<a onclick="selectProject(' + data[i].projectId + ')">' + data[i].name + '</a>';
-        //li.innerHTML = '<a href="/manager/project?projectId=' + data[0].projectId +  '">' + data[0].name + '</a>';
         projectList.appendChild(li);
     }
 }

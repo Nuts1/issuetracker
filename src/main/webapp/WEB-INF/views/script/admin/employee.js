@@ -21,7 +21,9 @@ function getRole() {
         success: function (data) {
             if (data != null) {
                 var option = document.createElement('option');
+                option.innerHTML = '';
                 var option2 = document.createElement('option');
+                option2.innerHTML = '';
                 for (var i = 0; i < data.length; i++) {
                     option.setAttribute('value', data[i].roleId);
                     option.setAttribute('name', data[i].roleId);
@@ -97,6 +99,7 @@ function getQualification() {
         timeout: 100000,
         success: function (data) {
             if (data != null) {
+                selectQualification.innerHTML = '';
                 var option = document.createElement('option');
                 for (var i = 0; i < data.length; i++) {
                     option.setAttribute('value', data[i].qualificationId);
@@ -142,7 +145,7 @@ function getByRole() {
     });
 }
 
-function deleteEmployee() {
+function deleteEmployeeFunction() {
     selectedEmployee = getParameterByName('selectedEmployee');
     $.ajax({
         type: "POST",
@@ -164,6 +167,9 @@ function deleteEmployee() {
 }
 
 function writeEmployeeData(id) {
+    document.getElementById('updateEmployee').setAttribute('value', 'Update');
+    document.getElementById('deleteEmployee').disabled = false;
+
     var employee;
     $.ajax({
         type: "GET",
@@ -202,6 +208,9 @@ function buttonAddNewEmployee() {
     document.getElementById('selecRole').value = "";
     document.getElementById('selectType').value = "";
     document.getElementById('selectQualification').value = "";
+
+    document.getElementById('updateEmployee').setAttribute('value', 'Add');
+    document.getElementById('deleteEmployee').disabled = true;
 }
 
 

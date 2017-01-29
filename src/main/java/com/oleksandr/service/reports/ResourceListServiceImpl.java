@@ -14,9 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.logging.Logger;
 
-import static java.util.Calendar.DAY_OF_MONTH;
-import static java.util.Calendar.HOUR_OF_DAY;
-import static java.util.Calendar.MONTH;
+import static java.util.Calendar.*;
 
 
 /**
@@ -55,7 +53,6 @@ public class ResourceListServiceImpl {
         }
 
         employees.forEach(employee -> {
-            System.out.println(employee);
             HashMap<Date, DayWork> totalDayWorks = new HashMap<>();
             EmployeeListItem employeeListItem = new EmployeeListItem();
             employeeListItem.setName(employee.getName());
@@ -67,14 +64,12 @@ public class ResourceListServiceImpl {
             }
             List<ProjectListItem> projectListItems = new ArrayList<>();
             projects.forEach(project -> {
-                System.out.println(project);
                 ProjectListItem projectListItem = new ProjectListItem();
                 projectListItem.setNameProject(project.getName());
                 List<SprintDto> sprints = sprintDao.getSprints(employee.getEmployeeId(), Long.parseLong(project.getProjectId()));
                 List<SprintListItem> sprintListItems = new ArrayList<>();
                 HashMap<Date, DayWork> totalDayWorksInProject = new HashMap<>();
                 sprints.forEach(sprint -> {
-                    System.out.println(sprint);
                     HashMap<Date, DayWork> totalDayWorksInSprint = new HashMap<>();
                     SprintListItem sprintListItem = new SprintListItem();
                     sprintListItem.setName(sprint.getName());
@@ -82,7 +77,6 @@ public class ResourceListServiceImpl {
                     List<TaskItem> taskItems = new ArrayList<>();
                     List<TaskEmployee> tasks = taskEmployeeDao.getEmployeeTasksByEmployeeAndSprint(employee, sprint.getSprintId());
                     tasks.forEach(task -> {
-                        System.out.println(task);
                         TaskItem taskItem = new TaskItem();
                         taskItem.setName(task.getTask().getName());
                         taskItem.setLoad(task.getLoad());
@@ -118,7 +112,6 @@ public class ResourceListServiceImpl {
                     .sum());
             employeeListItems.add(employeeListItem);
         });
-        System.out.println("Done");
         return new ResourceListDto(employeeListItems);
     }
 
@@ -140,40 +133,58 @@ public class ResourceListServiceImpl {
         }
 
         List<DayWork> dayToWorks = new ArrayList<>();
-        while (startDate.get(Calendar.YEAR) != maxDate.get(Calendar.YEAR) ||
+
+        // startDay
+        int hourStartTask = startDate.get(HOUR_OF_DAY);
+        DayWork dayWork = new DayWork();
+        resetTime(startDate);
+        dayWork.setDate(startDate.getTime());
+        double hoursSpendOnTaskInDay = ((16 - hourStartTask) * load);
+        dayWork.setWorks(hoursSpendOnTaskInDay); // 8 - hours in work day
+        setTotalDayWorks(totalDayWorks, startDate, hoursSpendOnTaskInDay);
+        dayToWorks.add(dayWork);
+
+        startDate.add(Calendar.DATE, 1);
+
+        // middle day (between start and and day)
+        while (startDate.compareTo(maxDate) < 0 && (startDate.get(Calendar.YEAR) != maxDate.get(Calendar.YEAR) ||
                 startDate.get(MONTH) != maxDate.get(MONTH) ||
-                startDate.get(DAY_OF_MONTH) != maxDate.get(DAY_OF_MONTH)) {
-            int hour = startDate.get(HOUR_OF_DAY);
-            startDate.set(HOUR_OF_DAY, 0); // 00:00 -
-            DayWork dayWork = new DayWork();
+                startDate.get(DAY_OF_MONTH) != maxDate.get(DAY_OF_MONTH))) {
+            dayWork = new DayWork();
+            resetTime(startDate);
+            dayWork.setDate(startDate.getTime());
 
             if(startDate.compareTo(completionDate) > 0) {
                 dayWork.setDelay(true);
             }
 
-            dayWork.setDate(startDate.getTime());
-            double hoursSpendOnTaskInDay = ((16 - hour) * load);
+            hoursSpendOnTaskInDay = (8 * load); // 8 - hours in work day
             dayWork.setWorks(hoursSpendOnTaskInDay);
 
             setTotalDayWorks(totalDayWorks, startDate, hoursSpendOnTaskInDay);
 
             dayToWorks.add(dayWork);
             startDate.add(Calendar.DATE, 1);
-            startDate.set(HOUR_OF_DAY, 8); // 8:00 - start work day
         }
-
-        startDate.set(HOUR_OF_DAY, 0); // 00:00
         // startDay and completionDate the same day
         int hourCompletionTask = completionDate.get(HOUR_OF_DAY);
         if (hourCompletionTask > 8) {
-            DayWork dayWork = new DayWork();
+            dayWork = new DayWork();
+            resetTime(startDate);
             dayWork.setDate(startDate.getTime());
-            double hoursSpendOnTaskInDay = ((16 - hourCompletionTask) * load);
+            hoursSpendOnTaskInDay = ((hourCompletionTask - 8) * load);
             dayWork.setWorks(hoursSpendOnTaskInDay); // 8 - hours in work day
             setTotalDayWorks(totalDayWorks, startDate, hoursSpendOnTaskInDay);
             dayToWorks.add(dayWork);
         }
         return dayToWorks;
+    }
+
+    private void resetTime(Calendar startDate) {
+        startDate.set(HOUR_OF_DAY, 0);
+        startDate.set(MILLISECOND, 0);
+        startDate.set(SECOND, 0);
+        startDate.set(MINUTE, 0);
     }
 
     private void setTotalDayWorks(HashMap<Date, DayWork> dayToWorks, Calendar startDate, double hoursSpendOnTaskInDay) {

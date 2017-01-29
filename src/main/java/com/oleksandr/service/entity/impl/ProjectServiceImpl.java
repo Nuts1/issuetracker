@@ -36,8 +36,8 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public void delete(long id) {
-        dao.delete(id);
+    public int delete(long id) {
+        return dao.delete(id);
     }
 
     @Override
@@ -80,6 +80,4 @@ public class ProjectServiceImpl implements ProjectService {
     public List<Project> getAllNameAndIdByCustomerId(long employeeId) {
         return dao.getAllNameAndIdByCustomerId(employeeId);
     }
-
-
 }

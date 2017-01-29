@@ -15,7 +15,7 @@ public interface ProjectService {
 
     List<Project> getAllNameAndId();
 
-    void delete(long id);
+    int delete(long id);
 
     ProjectDto getProjectDtoById(long idProject);
 

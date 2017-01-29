@@ -8,6 +8,7 @@ import com.oleksandr.entity.Qualification;
 import com.oleksandr.entity.Role;
 import com.oleksandr.entity.json.Views;
 import com.oleksandr.service.entity.*;
+import com.oleksandr.service.util.ErrorUtil;
 import com.oleksandr.validator.EmployeeValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -34,22 +35,23 @@ public class AdminEmployeeRest {
 
 
     private final EmployeeValidator employeeValidator;
-    private final MessageSource messageSource;
+    private final ErrorUtil errorUtil;
 
     @Autowired
     public AdminEmployeeRest(PositionService positionService,
                              RoleService roleService,
                              QualificationService qualificationService,
                              DepartmentService departmentService,
-                             EmployeeService employeeService, EmployeeValidator employeeValidator,
-                             MessageSource messageSource) {
+                             EmployeeService employeeService,
+                             EmployeeValidator employeeValidator,
+                             ErrorUtil errorUtil) {
         this.departmentService = departmentService;
         this.qualificationService = qualificationService;
         this.employeeService = employeeService;
         this.roleService = roleService;
         this.positionService = positionService;
         this.employeeValidator = employeeValidator;
-        this.messageSource = messageSource;
+        this.errorUtil = errorUtil;
     }
 
 
@@ -65,10 +67,13 @@ public class AdminEmployeeRest {
         if(!bindingResult.hasErrors()) {
             employeeService.save(employeeDto);
         }
-        return bindingResult.getAllErrors()
-                .stream()
-                .map(e -> messageSource.getMessage(e, LocaleContextHolder.getLocale()))
-                .collect(Collectors.toList());
+
+        List<String> result = errorUtil.getErrors(bindingResult);
+
+        if(result.size() == 0)
+            result.add("Success added");
+
+        return result;
     }
 
     @RequestMapping(value = "/admin/updateEmployee")
@@ -77,10 +82,12 @@ public class AdminEmployeeRest {
         if(!bindingResult.hasErrors()) {
             employeeService.update(employeeDto);
         }
-        return bindingResult.getAllErrors()
-                .stream()
-                .map(e -> messageSource.getMessage(e, LocaleContextHolder.getLocale()))
-                .collect(Collectors.toList());
+        List<String> result = errorUtil.getErrors(bindingResult);
+
+        if(result.size() == 0)
+            result.add("Success updated");
+
+        return result;
     }
 
     @JsonView(Views.Summary.class)
@@ -90,8 +97,13 @@ public class AdminEmployeeRest {
     }
 
     @RequestMapping(value = "/admin/deleteEmployee")
-    public void deleteEmployee(@RequestParam long employeeId) {
-        employeeService.delete(employeeId);
+    public String deleteEmployee(@RequestParam long employeeId) {
+        int rows = employeeService.delete(employeeId);
+        if (rows == 1) {
+            return "Success deleted";
+        } else {
+            return "Error. Updated rows = " + rows;
+        }
     }
 
     @JsonView(Views.Summary.class)

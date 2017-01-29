@@ -48,8 +48,7 @@ public class CustomerRest {
     public Statistic getProjectStatistic(@RequestParam String idProject) {
         try {
             long idPr = Long.parseLong(idProject);
-            Statistic statistic = projectService.getStatistic(idPr);
-            return statistic;
+            return projectService.getStatistic(idPr);
         } catch (NumberFormatException ignore) {
             return null;
         }

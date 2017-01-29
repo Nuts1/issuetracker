@@ -29,7 +29,7 @@ public class AdminController {
     @RequestMapping(value = "/admin")
     public String welcome(Principal principal, Model model) {
         //long employeeId = Long.parseLong(principal.getName()); // getName return employeeId; TODO
-        long employeeId = 169;
+        long employeeId = 2;
         Employee employee = employeeService.getById(employeeId);
         model.addAttribute("employee", employee);
         return "redirect:/admin/project.html";

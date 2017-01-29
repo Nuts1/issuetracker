@@ -31,11 +31,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        System.out.println("Email: " + email);
         Employee employee = employeeService.getEmployee(email);
-        System.out.println("role: " + employee.getRole().getName());
-        System.out.println("role: " + getAuthorities(employee.getRole().getName()));
-
         return new User(String.valueOf(employee.getEmployeeId()), employee.getPassword(), getAuthorities(employee.getRole().getName()));
     }
 

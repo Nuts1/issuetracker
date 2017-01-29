@@ -13,6 +13,7 @@ function setSprints(idProject) {
         timeout: 100000,
         success: function (data) {
             var sprints = document.getElementById('preliminarySprints');
+            sprints.innerHTML = '';
             for (var i = 0; i < data.length; i++) {
                 if (sprintId != parseInt(data[i].sprintId)) {
                     sprintsCompletionDate[data[i].sprintId] = data[i].completionDate;

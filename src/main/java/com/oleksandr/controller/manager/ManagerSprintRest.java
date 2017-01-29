@@ -7,6 +7,7 @@ import com.oleksandr.entity.Sprint;
 import com.oleksandr.entity.json.Views;
 import com.oleksandr.service.entity.impl.SprintServiceImpl;
 import com.oleksandr.service.reports.data.project.Statistic;
+import com.oleksandr.service.util.ErrorUtil;
 import com.oleksandr.validator.SprintValidator;
 import com.oleksandr.validator.TaskValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,15 +29,15 @@ import java.util.stream.Collectors;
 public class ManagerSprintRest {
     private final SprintServiceImpl sprintService;
     private final SprintValidator sprintValidator;
-    private final MessageSource messageSource;
+    private final ErrorUtil errorUtil;
 
     @Autowired
     public ManagerSprintRest(SprintServiceImpl sprintService,
                              SprintValidator sprintValidator,
-                             MessageSource messageSource) {
+                             ErrorUtil errorUtil) {
         this.sprintService = sprintService;
         this.sprintValidator = sprintValidator;
-        this.messageSource = messageSource;
+        this.errorUtil = errorUtil;
     }
 
 
@@ -47,10 +48,12 @@ public class ManagerSprintRest {
             sprintService.save(sprint);
         }
 
-        return bindingResult.getAllErrors()
-                .stream()
-                .map(e -> messageSource.getMessage(e, LocaleContextHolder.getLocale()))
-                .collect(Collectors.toList());
+        List<String> result = errorUtil.getErrors(bindingResult);
+
+        if(result.size() == 0)
+            result.add("Success added");
+
+        return result;
     }
 
     @RequestMapping(value = "/manager/editSprint", method = RequestMethod.POST)
@@ -60,10 +63,12 @@ public class ManagerSprintRest {
             sprintService.update(sprint);
         }
 
-        return bindingResult.getAllErrors()
-                .stream()
-                .map(e -> messageSource.getMessage(e, LocaleContextHolder.getLocale()))
-                .collect(Collectors.toList());
+        List<String> result = errorUtil.getErrors(bindingResult);
+
+        if(result.size() == 0)
+            result.add("Success updated");
+
+        return result;
     }
 
     @RequestMapping(value = "/manager/deleteSprint", method = RequestMethod.POST)

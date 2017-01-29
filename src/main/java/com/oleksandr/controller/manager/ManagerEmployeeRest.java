@@ -55,14 +55,13 @@ public class ManagerEmployeeRest {
         try {
             idDep = Long.parseLong(idDept);
         } catch (NumberFormatException e) {
-
         }
+        Long idPo = null;
         try {
-            Long idPo = Long.parseLong(idPos);
-            return employeeService.getByDeptIdAndPosId(idDep, idPo);
+            idPo = Long.parseLong(idPos);
         } catch (NumberFormatException ignore) {
         }
-        return null;
+        return employeeService.getByDeptIdAndPosId(idDep, idPo);
     }
 
     @JsonView(Views.Department.class)

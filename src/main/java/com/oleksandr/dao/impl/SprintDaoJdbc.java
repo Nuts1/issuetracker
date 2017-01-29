@@ -309,7 +309,6 @@ public class SprintDaoJdbc implements SprintDao {
 
     @Override
     public int save(SprintDto sprint) {
-        System.out.println(sprint);
         Connection connection = null;
         try {
             int row;
@@ -340,7 +339,6 @@ public class SprintDaoJdbc implements SprintDao {
 
     @Override
     public int update(SprintDto sprintDto) {
-        System.out.println(sprintDto);
         Connection connection = null;
         int rows = 0;
         try {

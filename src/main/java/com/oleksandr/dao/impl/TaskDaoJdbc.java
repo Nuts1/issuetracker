@@ -323,21 +323,23 @@ public class TaskDaoJdbc implements TaskDao {
     }
 
     @Override
-    public void delete(long id) {
+    public int delete(long id) {
         Connection connection = null;
         try {
             connection = dataSource.getConnection();
             connection.setAutoCommit(false);
             PreparedStatement statement = connection.prepareStatement(DELETE_BY_ID);
             statement.setLong(1, id);
-            statement.executeUpdate();
+            int rows = statement.executeUpdate();
             close(statement);
             connection.commit();
+            return rows;
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             close(connection);
         }
+        return 0;
     }
 
     @Override
