@@ -1,5 +1,0 @@
-heroku ps:scale web=1
-git add .
-git commit -am "navbar fix"
-git push heroku master
-heroku open
