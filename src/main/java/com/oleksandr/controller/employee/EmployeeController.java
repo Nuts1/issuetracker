@@ -28,8 +28,8 @@ public class EmployeeController {
 
     @RequestMapping(value = "/employee")
     public String welcome(Principal principal, Model model) {
-        //long employeeId = Long.parseLong(principal.getName()); // getName return employeeId; TODO
-        long employeeId = 900;
+        long employeeId = Long.parseLong(principal.getName()); // getName return employeeId; TODO
+        //long employeeId = 900;
         Employee employee = employeeService.getById(employeeId);
         model.addAttribute("employee", employee);
         return "redirect:/employee/employee.html";
