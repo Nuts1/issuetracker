@@ -266,7 +266,7 @@ function validateForm() {
     }
 
     var idSprint = document.getElementById('sprintId').value;
-    if (isNaN(parseInt(idSprint))) {
+    if (isNaN(parseInt(idSprint)) || validationInfo !== "") {
         validationInfo = validationInfo + "Select sprint!<br>";
         error.removeAttribute('hidden');
         error.innerHTML = validationInfo;
@@ -277,12 +277,12 @@ function validateForm() {
         validationInfo = validationInfo + "Error you cannot select a weekend";
     }
 
+    var sprintCompletionDate = new Date(document.getElementById(idSprint + 'SprintCompletionDate').innerHTML);
+    var sprintStartDate = new Date(document.getElementById(idSprint + 'SprintStartDate').innerHTML);
+
     if (startDate > sprintCompletionDate) {
         validationInfo = validationInfo + "Start date after sprint completion date<br>";
     }
-
-    var sprintCompletionDate = new Date(document.getElementById(idSprint + 'SprintCompletionDate').innerHTML);
-    var sprintStartDate = new Date(document.getElementById(idSprint + 'SprintStartDate').innerHTML);
 
     if (startDate < sprintStartDate) {
         validationInfo = validationInfo + "Start date befor sprint start date<br>";
@@ -292,7 +292,7 @@ function validateForm() {
         validationInfo = validationInfo + "Completion date after sprint completion date<br>";
     }
 
-    if (validationInfo != "") {
+    if (validationInfo !== "") {
         error.removeAttribute('hidden');
         error.innerHTML = validationInfo;
         return false;

@@ -1,5 +1,9 @@
 var tasks = {};
 
+var dataTableActualTime;
+var dataTableBaseTime;
+var charts = [];
+
 function selectProject(str) {
     $.ajax({
         type: "POST",
@@ -39,17 +43,19 @@ function addRow(task, startDate, completionDate, dataTable, taskResources) {
     }
 }
 function showChart(dataTableActualTime, dataTableBaseTime) {
-    if (dataTableActualTime.getNumberOfRows() > 0) {
+    if(charts[0] === undefined || charts[0] === null) {
         var ActualTimeDiv = document.getElementById('diagram');
-        var chart = new google.visualization.Gantt(ActualTimeDiv);
-        chart.draw(dataTableActualTime);
+        var BaseTimeDiv = document.getElementById('diagramBase');
+
+        charts[0] = new google.visualization.Gantt(ActualTimeDiv);
+        charts[1] = new google.visualization.Gantt(BaseTimeDiv);
+    } else {
+        charts[0].clearChart();
+        charts[1].clearChart();
     }
 
-    if (dataTableBaseTime.getNumberOfRows() > 0) {
-        var BaseTimeDiv = document.getElementById('diagramBase');
-        var chart = new google.visualization.Gantt(BaseTimeDiv);
-        chart.draw(dataTableBaseTime);
-    }
+    charts[0].draw(dataTableActualTime);
+    charts[1].draw(dataTableBaseTime);
 }
 function successCompleteTask(tr) {
     tr.setAttribute('class', 'alert alert-success');
@@ -67,6 +73,7 @@ function deleyStartTask(tr) {
     tr.setAttribute('data-toggle', 'tooltip');
 }
 function tableCreate(project) {
+
     var projectName = document.getElementById('projectName');
     var projectInfo = document.getElementById('projectInfo');
     var sprints = document.getElementById('sprints');
@@ -80,8 +87,7 @@ function tableCreate(project) {
     var sprintIdSelect = document.getElementById('sprintId');
     sprintIdSelect.innerHTML = "<option selected disabled>Select Sprint</option>";
 
-    var dataTableActualTime = new google.visualization.DataTable();
-
+    dataTableActualTime = new google.visualization.DataTable();
     dataTableActualTime.addColumn('string', 'Task ID');
     dataTableActualTime.addColumn('string', 'Task Name');
     dataTableActualTime.addColumn('string', 'Resource');
@@ -91,7 +97,7 @@ function tableCreate(project) {
     dataTableActualTime.addColumn('number', 'Percent Complete');
     dataTableActualTime.addColumn('string', 'Dependencies');
 
-    var dataTableBaseTime = new google.visualization.DataTable();
+    dataTableBaseTime = new google.visualization.DataTable();
 
     dataTableBaseTime.addColumn('string', 'Task ID');
     dataTableBaseTime.addColumn('string', 'Task Name');
